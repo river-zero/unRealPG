@@ -14,6 +14,12 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
+	UFUNCTION(BlueprintPure)
+	float TransformedSin();
+
+	UFUNCTION(BlueprintPure)
+	float TransformedCos();
+
 public:	
 	virtual void Tick(float DeltaTime) override;
 

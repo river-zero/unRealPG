@@ -23,6 +23,7 @@ float AFItem::TransformedCos() {
 void AFItem::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
 
+	// 위아래 움직임 구현
 	RunningTime += DeltaTime;
 	AddActorWorldOffset(FVector(TransformedSin(), TransformedCos(), 0.f));
 
