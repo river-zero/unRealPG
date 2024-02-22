@@ -1,6 +1,5 @@
 #include "Items/FItem.h"
-#include "DrawDebugHelpers.h"
-#include "For_The_Job/For_The_Job.h"
+#include "For_The_Job/DebugMacros.h"
 
 AFItem::AFItem() {
 	PrimaryActorTick.bCanEverTick = true;
@@ -12,8 +11,8 @@ void AFItem::BeginPlay() {
 	UWorld* World = GetWorld();
 	FVector Location = GetActorLocation();
 	FVector Forward = GetActorForwardVector();
-	DRAW_LINE(Location, Location + Forward * 100.f)
-	DRAW_SPHERE(Location)
+	DRAW_SPHERE(Location);
+	DRAW_VECTOR(Location, Location + Forward * 100.f)
 }
 
 void AFItem::Tick(float DeltaTime) {
