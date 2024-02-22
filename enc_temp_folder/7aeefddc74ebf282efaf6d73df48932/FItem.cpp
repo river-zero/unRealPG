@@ -15,7 +15,7 @@ void AFItem::BeginPlay() {
 void AFItem::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
 
-	// 위아래 움직임 구현
+	// 위아래로 움직임 구현
 	RunningTime += DeltaTime;
 	float DeltaZ = Amplitude * FMath::Sin(RunningTime * TimeConstant);
 	AddActorWorldOffset(FVector(0.f, 0.f, DeltaZ));

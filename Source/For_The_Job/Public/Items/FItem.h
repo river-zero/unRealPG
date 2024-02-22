@@ -16,4 +16,9 @@ protected:
 
 public:	
 	virtual void Tick(float DeltaTime) override;
+
+private:
+	float RunningTime;
+	float Amplitude;
+	float TimeConstant;
 };
