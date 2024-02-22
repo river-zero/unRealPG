@@ -7,18 +7,16 @@ AFItem::AFItem() {
 
 void AFItem::BeginPlay() {
 	Super::BeginPlay();
-
-	UWorld* World = GetWorld();
-
-	SetActorLocation(FVector(0.f, 0.f, 50.f));
-	SetActorRotation(FRotator(0.f, 45.f, 0.f));
-	FVector Location = GetActorLocation();
-	FVector Forward = GetActorForwardVector();
-
-	DRAW_SPHERE(Location);
-	DRAW_VECTOR(Location, Location + Forward * 100.f)
 }
 
 void AFItem::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
+
+	float MovementRate = 60.f;
+	float RotationRate = 45.f;
+
+	AddActorWorldOffset(FVector(MovementRate * DeltaTime, 0.f, 0.f));
+	AddActorWorldRotation(FRotator(0.f, RotationRate * DeltaTime, 0.f));
+	DRAW_SPHERE_SingleFrame(GetActorLocation());
+	DRAW_VECTOR_SingleFrame(GetActorLocation(), GetActorLocation() + GetActorForwardVector() * 100.f);
 }
