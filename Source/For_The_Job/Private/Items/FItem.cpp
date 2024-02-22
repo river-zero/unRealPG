@@ -11,6 +11,8 @@ void AFItem::BeginPlay() {
 
 	UWorld* World = GetWorld();
 	FVector Location = GetActorLocation();
+	FVector Forward = GetActorForwardVector();
+	DRAW_LINE(Location, Location + Forward * 100.f)
 	DRAW_SPHERE(Location)
 }
 
