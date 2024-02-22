@@ -18,7 +18,13 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 private:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Meta = (AllowPrivateAccess = true))
 	float RunningTime;
-	float Amplitude;
-	float TimeConstant;
+
+protected:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sine Parameters")
+	float Amplitude = 0.25f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sine Parameters")
+	float TimeConstant = 5.f;
 };
