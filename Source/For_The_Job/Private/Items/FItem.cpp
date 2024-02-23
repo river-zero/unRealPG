@@ -4,8 +4,8 @@
 AFItem::AFItem() {
 	PrimaryActorTick.bCanEverTick = true;
 
-	Amplitude = 0.25f;
-	TimeConstant = 5.f;
+	ItemMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ItemMeshComponent"));
+	RootComponent = ItemMesh;
 }
 
 void AFItem::BeginPlay() {
@@ -24,8 +24,4 @@ void AFItem::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
 
 	RunningTime += DeltaTime;
-	AddActorWorldOffset(FVector(TransformedSin(), TransformedCos(), 0.f));
-
-	DRAW_SPHERE_SingleFrame(GetActorLocation());
-	DRAW_VECTOR_SingleFrame(GetActorLocation(), GetActorLocation() + GetActorForwardVector() * 100.f);
 }
