@@ -37,7 +37,7 @@ protected:
 	float TimeConstant = 5.f;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	UStaticMeshComponent* ItemMesh;
+	UStaticMeshComponent *ItemMesh;
 };
 
 template<typename T>
