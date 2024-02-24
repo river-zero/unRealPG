@@ -21,7 +21,7 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-private:
+protected:
 	UPROPERTY(VisibleAnywhere)
 	USpringArmComponent* CameraBoom;
 
