@@ -7,6 +7,8 @@
 // 전방 선언으로 헤더 파일 의존성과 빌드 시간 감소
 class UCapsuleComponent;
 class USkeletalMeshComponent;
+class USpringArmComponent;
+class UCameraComponent;
 
 UCLASS()
 class FOR_THE_JOB_API AFBird : public APawn {
@@ -24,11 +26,21 @@ protected:
 
 	void MoveForward(float Value);
 
+	void Turn(float Value);
+
+	void LookUp(float Value);
+
 private:
 	UPROPERTY(VisibleAnywhere)
 	UCapsuleComponent *Capsule;
 
 	UPROPERTY(VisibleAnywhere)
 	USkeletalMeshComponent *BirdMesh;
+
+	UPROPERTY(VisibleAnywhere)
+	USpringArmComponent* CameraBoom;
+
+	UPROPERTY(VisibleAnywhere)
+	UCameraComponent* ViewCamera;
 };
  
