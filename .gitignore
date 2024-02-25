@@ -131,12 +131,20 @@ Engine/x64
 Client/x64
 .vs
 
+/Content/*
 !/Content/ForTheJob/
+/Content/*
+!/Content/ForTheJob/**
 
-/.vs/
+/Content/AnimalVarietyPack/
+/Content/Characters/
+/Content/InfinityBladeGrassLands/
+/Content/LevelPrototyping/
+/Content/ParagonAurora/
+/Content/StarterContent/
+/Content/ThirdPerson/
 
-/Binaries/
-
-/Intermediate/
-
-/Saved/
+.vs/
+Binaries/
+Intermediate/
+Saved/
