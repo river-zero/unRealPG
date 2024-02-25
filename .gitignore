@@ -130,3 +130,13 @@ Output
 Engine/x64
 Client/x64
 .vs
+
+!/Content/ForTheJob/
+
+/.vs/
+
+/Binaries/
+
+/Intermediate/
+
+/Saved/
