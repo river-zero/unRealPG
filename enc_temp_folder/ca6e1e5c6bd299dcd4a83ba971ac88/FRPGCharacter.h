@@ -6,7 +6,6 @@
 #include "FRPGCharacter.generated.h"
 
 class UFInputConfigData;
-class UInputComponent;
 class UInputMappingContext;
 
 UENUM()
@@ -26,7 +25,7 @@ public:
 
 	virtual void Tick(float DeltaSeconds) override;
 
-	virtual void SetupPlayerInputComponent(UInputComponent *PlayerInputComponent) override;
+	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	virtual void PossessedBy(AController* NewController) override;
 
