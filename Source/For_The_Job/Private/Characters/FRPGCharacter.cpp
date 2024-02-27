@@ -49,8 +49,9 @@ void AFRPGCharacter::SetupPlayerInputComponent(UInputComponent *PlayerInputCompo
         EnhancedInputComponent->BindAction(PlayerCharacterInputConfigData->MoveAction, ETriggerEvent::Triggered, this, &AFRPGCharacter::Move);
         EnhancedInputComponent->BindAction(PlayerCharacterInputConfigData->LookAction, ETriggerEvent::Triggered, this, &AFRPGCharacter::Look);
         EnhancedInputComponent->BindAction(PlayerCharacterInputConfigData->ChangeViewAction, ETriggerEvent::Started, this, &AFRPGCharacter::ChangeView);
-        EnhancedInputComponent->BindAction(PlayerCharacterInputConfigData->JumpAction, ETriggerEvent::Started, this, &AFCharacter::Jump);
         EnhancedInputComponent->BindAction(PlayerCharacterInputConfigData->RunAction, ETriggerEvent::Started, this, &AFRPGCharacter::Run);
+        EnhancedInputComponent->BindAction(PlayerCharacterInputConfigData->JumpAction, ETriggerEvent::Started, this, &AFRPGCharacter::StartJump);
+        EnhancedInputComponent->BindAction(PlayerCharacterInputConfigData->JumpAction, ETriggerEvent::Canceled, this, &AFRPGCharacter::StopJump);
     }
 }
 
@@ -212,4 +213,18 @@ void AFRPGCharacter::Run(const FInputActionValue &InValue) {
     } else {
         GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
     }
+}
+
+void AFRPGCharacter::Jump() {
+    Super::Jump();
+
+    GetCharacterMovement()->GravityScale = GravityScaleOnJumpStart;
+}
+
+void AFRPGCharacter::StartJump() {
+    Jump();
+}
+
+void AFRPGCharacter::StopJump() {
+    GetCharacterMovement()->GravityScale = DefaultGravityScale;
 }

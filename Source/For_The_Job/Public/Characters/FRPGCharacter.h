@@ -44,6 +44,12 @@ private:
 
 	void Run(const FInputActionValue& InValue);
 
+	virtual void Jump() override;
+
+	void StartJump();
+
+	void StopJump();
+
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RPGCharacter", Meta = (AllowPrivateAccess = true))
 	TObjectPtr<UFInputConfigData> PlayerCharacterInputConfigData;
@@ -68,4 +74,8 @@ private:
 	float RunSpeed = 500.f;
 
 	float WalkSpeed = 300.f;
+
+	float DefaultGravityScale = 1.f;
+
+	float GravityScaleOnJumpStart = 1.5f;
 };
