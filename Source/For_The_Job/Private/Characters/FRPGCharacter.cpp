@@ -41,7 +41,7 @@ void AFRPGCharacter::Tick(float DeltaSeconds) {
     }
 }
 
-void AFRPGCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) {
+void AFRPGCharacter::SetupPlayerInputComponent(UInputComponent *PlayerInputComponent) {
     Super::SetupPlayerInputComponent(PlayerInputComponent);
 
     UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent);
@@ -50,10 +50,11 @@ void AFRPGCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
         EnhancedInputComponent->BindAction(PlayerCharacterInputConfigData->LookAction, ETriggerEvent::Triggered, this, &AFRPGCharacter::Look);
         EnhancedInputComponent->BindAction(PlayerCharacterInputConfigData->ChangeViewAction, ETriggerEvent::Started, this, &AFRPGCharacter::ChangeView);
         EnhancedInputComponent->BindAction(PlayerCharacterInputConfigData->JumpAction, ETriggerEvent::Started, this, &AFCharacter::Jump);
+        EnhancedInputComponent->BindAction(PlayerCharacterInputConfigData->RunAction, ETriggerEvent::Started, this, &AFRPGCharacter::Run);
     }
 }
 
-void AFRPGCharacter::PossessedBy(AController* NewController) {
+void AFRPGCharacter::PossessedBy(AController *NewController) {
     Super::PossessedBy(NewController);
 
     // SetViewMode(EViewMode::QuarterView);
@@ -127,7 +128,7 @@ void AFRPGCharacter::BeginPlay() {
     }
 }
 
-void AFRPGCharacter::Move(const FInputActionValue& InValue) {
+void AFRPGCharacter::Move(const FInputActionValue &InValue) {
     FVector2D MovementVector = InValue.Get<FVector2D>();
 
     switch (CurrentViewMode) {
@@ -160,7 +161,7 @@ void AFRPGCharacter::Move(const FInputActionValue& InValue) {
     }
 }
 
-void AFRPGCharacter::Look(const FInputActionValue& InValue) {
+void AFRPGCharacter::Look(const FInputActionValue &InValue) {
     FVector2D LookVector = InValue.Get<FVector2D>();
 
     switch (CurrentViewMode) {
@@ -180,7 +181,7 @@ void AFRPGCharacter::Look(const FInputActionValue& InValue) {
     }
 }
 
-void AFRPGCharacter::ChangeView(const FInputActionValue& InValue) {
+void AFRPGCharacter::ChangeView(const FInputActionValue &InValue) {
     switch (CurrentViewMode) {
     case EViewMode::BackView:
         GetController()->SetControlRotation(GetActorRotation());
@@ -200,5 +201,15 @@ void AFRPGCharacter::ChangeView(const FInputActionValue& InValue) {
         break;
     default:
         break;
+    }
+}
+
+void AFRPGCharacter::Run(const FInputActionValue &InValue) {
+    IsWalking = !IsWalking;
+
+    if (!IsWalking) {
+        GetCharacterMovement()->MaxWalkSpeed = RunSpeed;
+    } else {
+        GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
     }
 }

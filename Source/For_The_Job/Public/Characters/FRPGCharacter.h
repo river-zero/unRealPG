@@ -42,6 +42,8 @@ private:
 
 	void ChangeView(const FInputActionValue& InValue);
 
+	void Run(const FInputActionValue& InValue);
+
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RPGCharacter", Meta = (AllowPrivateAccess = true))
 	TObjectPtr<UFInputConfigData> PlayerCharacterInputConfigData;
@@ -60,4 +62,10 @@ private:
 	FRotator DestArmRotation = FRotator::ZeroRotator;
 
 	float ArmRotationChangeSpeed = 10.f;
+
+	bool IsWalking = true;
+
+	float RunSpeed = 500.f;
+
+	float WalkSpeed = 300.f;
 };

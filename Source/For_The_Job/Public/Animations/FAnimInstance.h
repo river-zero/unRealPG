@@ -25,7 +25,4 @@ public:
 
 	UPROPERTY(BlueprintReadOnly, Category = Movement)
 	uint8 IsFalling : 1;
-
-	UPROPERTY(BlueprintReadOnly, Category = Movement)
-	uint8 IsCrouching : 1;
 };
