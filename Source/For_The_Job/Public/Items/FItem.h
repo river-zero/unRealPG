@@ -4,6 +4,8 @@
 #include "GameFramework/Actor.h"
 #include "FItem.generated.h"
 
+class USphereComponent;
+
 UCLASS()
 class FOR_THE_JOB_API AFItem : public AActor {
 	GENERATED_BODY()
@@ -25,6 +27,12 @@ protected:
 	template<typename T>
 	T Avg(T First, T Second);
 
+	UFUNCTION()
+	virtual void OnSphereOverlap(UPrimitiveComponent *OverlappedComponent, AActor *OtherActor, UPrimitiveComponent *OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult &SweepResult);
+
+	UFUNCTION()
+	virtual void OnSphereEndOverlap(UPrimitiveComponent *OverlappedComponent, AActor *OtherActor, UPrimitiveComponent *OtherComp, int32 OtherBodyIndex);
+
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Meta = (AllowPrivateAccess = true))
 	float RunningTime;
@@ -38,6 +46,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	UStaticMeshComponent *ItemMesh;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	USphereComponent *Sphere;
 };
 
 template<typename T>
