@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "Animation/AnimInstance.h"
+#include "Characters/CharacterType.h"
 #include "FAnimInstance.generated.h"
 
 UCLASS()
@@ -25,4 +26,6 @@ public:
 
 	UPROPERTY(BlueprintReadOnly, Category = Movement)
 	uint8 IsFalling : 1;
+
+	ECharacterState CharacterState;
 };

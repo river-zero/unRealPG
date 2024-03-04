@@ -19,5 +19,6 @@ void UFAnimInstance::NativeUpdateAnimation(float DeltaTime) {
 	if (RPGCharacterMovement) {
 		GroundSpeed = UKismetMathLibrary::VSizeXY(RPGCharacterMovement->Velocity);
 		IsFalling = RPGCharacterMovement->IsFalling();
+		CharacterState = RPGCharacter->GetCharacterState();
 	}
 }

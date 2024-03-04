@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 #include "Characters/FCharacter.h"
 #include "InputActionValue.h"
+#include "Characters/CharacterType.h"
 #include "FRPGCharacter.generated.h"
 
 class UFInputConfigData;
@@ -34,6 +35,8 @@ public:
 	void SetViewMode(EViewMode InViewMode);
 
 	FORCEINLINE void SetOverlappingItem(AFItem *Item) { OverlappingItem = Item; }
+
+	FORCEINLINE ECharacterState GetCharacterState() const { return CharacterState; }
 
 protected:
 	virtual void BeginPlay() override;
@@ -86,4 +89,6 @@ private:
 
 	UPROPERTY(VisibleInstanceOnly)
 	AFItem *OverlappingItem;
+
+	ECharacterState CharacterState = ECharacterState::ECS_Unequipped;
 };
