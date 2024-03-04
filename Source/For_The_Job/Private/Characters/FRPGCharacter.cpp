@@ -8,6 +8,8 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "Inputs/FInputConfigData.h"
+#include "Items/FItem.h"
+#include "Items/Weapons/FWeapon.h"
 
 AFRPGCharacter::AFRPGCharacter() {
 	PrimaryActorTick.bCanEverTick = true;
@@ -52,6 +54,7 @@ void AFRPGCharacter::SetupPlayerInputComponent(UInputComponent *PlayerInputCompo
         EnhancedInputComponent->BindAction(PlayerCharacterInputConfigData->RunAction, ETriggerEvent::Started, this, &AFRPGCharacter::Run);
         EnhancedInputComponent->BindAction(PlayerCharacterInputConfigData->JumpAction, ETriggerEvent::Started, this, &AFRPGCharacter::StartJump);
         EnhancedInputComponent->BindAction(PlayerCharacterInputConfigData->JumpAction, ETriggerEvent::Canceled, this, &AFRPGCharacter::StopJump);
+        EnhancedInputComponent->BindAction(PlayerCharacterInputConfigData->InteractAction, ETriggerEvent::Started, this, &AFRPGCharacter::EKeyPressed);
     }
 }
 
@@ -227,4 +230,11 @@ void AFRPGCharacter::StartJump() {
 
 void AFRPGCharacter::StopJump() {
     GetCharacterMovement()->GravityScale = DefaultGravityScale;
+}
+
+void AFRPGCharacter::EKeyPressed() {
+    AFWeapon *OverlappingWeapon = Cast< AFWeapon>(OverlappingItem);
+    if (OverlappingWeapon) {
+        OverlappingWeapon->Equip(GetMesh(), FName("RightHandSocket"));
+    }
 }

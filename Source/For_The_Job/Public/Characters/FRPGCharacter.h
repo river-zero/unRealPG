@@ -8,6 +8,7 @@
 class UFInputConfigData;
 class UInputComponent;
 class UInputMappingContext;
+class AFItem;
 
 UENUM()
 enum class EViewMode : uint8 {
@@ -32,6 +33,8 @@ public:
 
 	void SetViewMode(EViewMode InViewMode);
 
+	FORCEINLINE void SetOverlappingItem(AFItem *Item) { OverlappingItem = Item; }
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -49,6 +52,8 @@ private:
 	void StartJump();
 
 	void StopJump();
+
+	void EKeyPressed();
 
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RPGCharacter", Meta = (AllowPrivateAccess = true))
@@ -78,4 +83,7 @@ private:
 	float DefaultGravityScale = 1.f;
 
 	float GravityScaleOnJumpStart = 1.5f;
+
+	UPROPERTY(VisibleInstanceOnly)
+	AFItem *OverlappingItem;
 };
