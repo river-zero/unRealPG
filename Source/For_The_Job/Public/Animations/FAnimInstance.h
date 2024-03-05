@@ -18,14 +18,15 @@ public:
 	UPROPERTY(BlueprintReadOnly)
 	class AFRPGCharacter *RPGCharacter;
 
-	UPROPERTY(BlueprintReadOnly, Category = Movement)
+	UPROPERTY(BlueprintReadOnly, Category = "Movement")
 	class UCharacterMovementComponent *RPGCharacterMovement;
 
-	UPROPERTY(BlueprintReadOnly, Category = Movement)
+	UPROPERTY(BlueprintReadOnly, Category = "Movement")
 	float GroundSpeed;
 
-	UPROPERTY(BlueprintReadOnly, Category = Movement)
+	UPROPERTY(BlueprintReadOnly, Category = "Movement")
 	uint8 IsFalling : 1;
 
+	UPROPERTY(BlueprintReadOnly, Category = "Movement | Character State")
 	ECharacterState CharacterState;
 };
