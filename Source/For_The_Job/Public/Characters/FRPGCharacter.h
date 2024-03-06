@@ -10,7 +10,6 @@ class UFInputConfigData;
 class UInputComponent;
 class UInputMappingContext;
 class AFItem;
-class UAnimMaontage;
 
 UENUM()
 enum class EViewMode : uint8 {
@@ -39,10 +38,14 @@ public:
 
 	FORCEINLINE ECharacterState GetCharacterState() const { return CharacterState; }
 
+	UFUNCTION()
+	void OnAttackMontageEnded(UAnimMontage *Montage, bool bInterrupted);
+
 protected:
 	virtual void BeginPlay() override;
 
 private:
+	// Enhanced Input을 이용한 콜백 함수들 - - - - - - - - - - - -
 	void Move(const FInputActionValue& InValue);
 
 	void Look(const FInputActionValue& InValue);
@@ -60,6 +63,19 @@ private:
 	void EKeyPressed();
 
 	void Attack();
+
+	bool CanAttack();
+
+	UFUNCTION()
+	void CheckHit();
+
+	void BeginCombo();
+
+	UFUNCTION()
+	void CheckCanNextCombo();
+
+	UFUNCTION()
+	void EndCombo(class UAnimMontage *InAnimMontage, bool bInterrupted);
 
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = RPGCharacter, Meta = (AllowPrivateAccess = true))
@@ -88,19 +104,26 @@ private:
 
 	float WalkSpeed = 300.f;
 
-	// 점프 시 다른 중력 적용을 위한 변수들 - - - - - - - - - - - - - 
+	// 점프 시 빠른 착지를 위한 변수들 - - - - - - - - - - - - - - -  
 	float DefaultGravityScale = 1.f;
 
 	float GravityScaleOnJumpStart = 1.5f;
 
-	// 아이템 장착을 위한 변수들 - - - - - - -- - - - - - - - - - - -
+	// 아이템 상호작용을 위한 변수들 - - - - - - -- - - - - - - - - -
 	UPROPERTY(VisibleInstanceOnly)
 	AFItem *OverlappingItem;
 
 	// 무기 소지에 따른 애니메이션 재생을 위한 변수들 - - - - - - - -
 	ECharacterState CharacterState = ECharacterState::ECS_Unequipped;
 
-	// 애니메이션 몽타주를 위한 변수들 - - - - - - - - - - - - - - - -
-	UPROPERTY(EditDefaultsOnly, Category = Montages)
-	UAnimMontage *AttackMontage;
+	// 콤보 공격을 위한 변수들 - - - - - - - - - - - - - - - - - - - 
+	EActionState ActionState = EActionState::EAS_Unoccupied;
+
+	FString AttackAnimMontageSectionName = FString(TEXT("Attack"));
+
+	int32 MaxComboCount = 3;
+
+	int32 CurrentComboCount = 0;
+
+	bool bIsAttackKeyPressed = false;
 };

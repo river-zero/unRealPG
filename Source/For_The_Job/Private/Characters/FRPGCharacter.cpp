@@ -10,7 +10,8 @@
 #include "Inputs/FInputConfigData.h"
 #include "Items/FItem.h"
 #include "Items/Weapons/FWeapon.h"
-#include "Animation/AnimMontage.h"
+#include "Animations/FAnimInstance.h"
+#include "Kismet/KismetSystemLibrary.h"
 
 AFRPGCharacter::AFRPGCharacter() {
 	PrimaryActorTick.bCanEverTick = true;
@@ -122,6 +123,11 @@ void AFRPGCharacter::SetViewMode(EViewMode InViewMode) {
     }
 }
 
+void AFRPGCharacter::OnAttackMontageEnded(UAnimMontage *Montage, bool bInterrupted) {
+    GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
+    EActionState::EAS_Unoccupied;
+}
+
 void AFRPGCharacter::BeginPlay() {
 	Super::BeginPlay();
 
@@ -131,6 +137,13 @@ void AFRPGCharacter::BeginPlay() {
         if (true == ::IsValid(Subsystem)) {
             Subsystem->AddMappingContext(PlayerCharacterInputMappingContext, 0);
         }
+    }
+
+    UFAnimInstance *AnimInstance = Cast<UFAnimInstance>(GetMesh()->GetAnimInstance());
+    if (true == ::IsValid(AnimInstance)) {
+        AnimInstance->OnMontageEnded.AddDynamic(this, &ThisClass::OnAttackMontageEnded);
+        AnimInstance->OnCheckHitDelegate.AddDynamic(this, &ThisClass::CheckHit);
+        AnimInstance->OnAttackEndDelegate.AddDynamic(this, &ThisClass::CheckCanNextCombo);
     }
 }
 
@@ -243,26 +256,62 @@ void AFRPGCharacter::EKeyPressed() {
 }
 
 void AFRPGCharacter::Attack() {
-    UAnimInstance *AnimInstance = GetMesh()->GetAnimInstance();
-    if (AnimInstance && AttackMontage) {
-        // 공격 모션을 랜덤으로 골라 실행
-        AnimInstance->Montage_Play(AttackMontage);
-        int32 Selection = FMath::RandRange(0, 2);
-        FName SectionName = FName();
-        switch (Selection) {
-        case 0:
-            SectionName = FName("Attack1");
-            break;
-        case 1:
-            SectionName = FName("Attack2");
-            break;
-        case 2:
-            SectionName = FName("Attack3");
-            break;
-        default:
-            break;
-        }
-
-        AnimInstance->Montage_JumpToSection(SectionName, AttackMontage);
+    if (0 == CurrentComboCount) {
+        BeginCombo();
+        return;
+    } else {
+        ensure(FMath::IsWithinInclusive<int32>(CurrentComboCount, 1, MaxComboCount));
+        bIsAttackKeyPressed = true;
     }
+}
+
+bool AFRPGCharacter::CanAttack() {
+    return ActionState == EActionState::EAS_Unoccupied && CharacterState != ECharacterState::ECS_Unequipped;
+}
+
+void AFRPGCharacter::CheckHit() {
+    UKismetSystemLibrary::PrintString(this, FString::Printf(TEXT("CheckHit() has been called.")));
+}
+
+void AFRPGCharacter::BeginCombo() {
+    UFAnimInstance *AnimInstance = Cast<UFAnimInstance>(GetMesh()->GetAnimInstance());
+    if (false == ::IsValid(AnimInstance)) {
+        return;
+    }
+
+    if (CanAttack()) {
+        CurrentComboCount = 1;
+        GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
+        ActionState = EActionState::EAS_Attacking;
+
+        AnimInstance->PlayAttackMontage();
+
+        FOnMontageEnded OnMontageEndedDelegate;
+        OnMontageEndedDelegate.BindUObject(this, &ThisClass::EndCombo);
+        AnimInstance->Montage_SetEndDelegate(OnMontageEndedDelegate, AnimInstance->AttackMontage);
+    }
+
+}
+
+void AFRPGCharacter::CheckCanNextCombo() {
+    UFAnimInstance *AnimInstance = Cast<UFAnimInstance>(GetMesh()->GetAnimInstance());
+    if (false == ::IsValid(AnimInstance)) {
+        return;
+    }
+
+    if (true == bIsAttackKeyPressed) {
+        CurrentComboCount = FMath::Clamp(CurrentComboCount + 1, 1, MaxComboCount);
+
+        FName NextSectionName = *FString::Printf(TEXT("%s%d"), *AttackAnimMontageSectionName, CurrentComboCount);
+        AnimInstance->Montage_JumpToSection(NextSectionName, AnimInstance->AttackMontage);
+        bIsAttackKeyPressed = false;
+    }
+}
+
+void AFRPGCharacter::EndCombo(UAnimMontage *InAnimMontage, bool bInterrupted) {
+    ensure(0 != CurrentComboCount);
+    CurrentComboCount = 0;
+    bIsAttackKeyPressed = false;
+    ActionState = EActionState::EAS_Unoccupied;
+    GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
 }

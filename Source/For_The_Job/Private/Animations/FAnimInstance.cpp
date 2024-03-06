@@ -22,3 +22,23 @@ void UFAnimInstance::NativeUpdateAnimation(float DeltaTime) {
 		CharacterState = RPGCharacter->GetCharacterState();
 	}
 }
+
+void UFAnimInstance::PlayAttackMontage() {
+	if (true == ::IsValid(AttackMontage)) {
+		if (false == Montage_IsPlaying(AttackMontage)) {
+			Montage_Play(AttackMontage);
+		}
+	}
+}
+
+void UFAnimInstance::AnimNotify_CheckHit() {
+	if (true == OnCheckHitDelegate.IsBound()) {
+		OnCheckHitDelegate.Broadcast();
+	}
+}
+
+void UFAnimInstance::AnimNotify_AttackEnd() {
+	if (true == OnAttackEndDelegate.IsBound()) {
+		OnAttackEndDelegate.Broadcast();
+	}
+}
