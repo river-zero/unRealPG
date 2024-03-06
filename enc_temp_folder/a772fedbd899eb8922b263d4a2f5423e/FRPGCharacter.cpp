@@ -245,7 +245,6 @@ void AFRPGCharacter::EKeyPressed() {
 void AFRPGCharacter::Attack() {
     UAnimInstance *AnimInstance = GetMesh()->GetAnimInstance();
     if (AnimInstance && AttackMontage) {
-        // 공격 모션을 랜덤으로 골라 실행
         AnimInstance->Montage_Play(AttackMontage);
         int32 Selection = FMath::RandRange(0, 2);
         FName SectionName = FName();
