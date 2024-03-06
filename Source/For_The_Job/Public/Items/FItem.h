@@ -6,6 +6,11 @@
 
 class USphereComponent;
 
+enum class EItemState : uint8 {
+	EIS_Hovering,
+	EIS_Equipped
+};
+
 UCLASS()
 class FOR_THE_JOB_API AFItem : public AActor {
 	GENERATED_BODY()
@@ -49,6 +54,8 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	USphereComponent *Sphere;
+
+	EItemState ItemState = EItemState::EIS_Hovering;
 };
 
 template<typename T>

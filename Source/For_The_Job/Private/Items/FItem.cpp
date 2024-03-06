@@ -48,4 +48,9 @@ void AFItem::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
 
 	RunningTime += DeltaTime;
+
+	// 아이템이 호버링하는 동안 위아래로 움직이도록 함
+	if (ItemState == EItemState::EIS_Hovering) {
+		AddActorWorldOffset(FVector(0.f, 0.f, TransformedSin()));
+	}
 }

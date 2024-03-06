@@ -148,9 +148,6 @@ void AFRPGCharacter::BeginPlay() {
 }
 
 void AFRPGCharacter::Move(const FInputActionValue &InValue) {
-    // 캐릭터가 공격 중인 경우 이동 제한을 위함
-    // if (ActionState == EActionState::EAS_Attacking) return;
-
     FVector2D MovementVector = InValue.Get<FVector2D>();
 
     switch (CurrentViewMode) {
@@ -284,10 +281,7 @@ void AFRPGCharacter::BeginCombo() {
 
     if (CanAttack()) {
         CurrentComboCount = 1;
-
-        // 공격하는 동안에는 이동하지 못하게 함
         GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
-
         ActionState = EActionState::EAS_Attacking;
 
         AnimInstance->PlayAttackMontage();
