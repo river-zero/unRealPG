@@ -28,6 +28,8 @@ private:
 	UFUNCTION()
 	void AnimNotify_AttackEnd();
 
+	void PlayEquipMontage(const FName &SectionName);
+
 public:
 	UPROPERTY(BlueprintReadOnly)
 	class AFRPGCharacter *RPGCharacter;
@@ -47,6 +49,9 @@ public:
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = Montages)
 	UAnimMontage *AttackMontage;
+
+	UPROPERTY(EditDefaultsOnly, Category = Montages)
+	UAnimMontage *EquipMontage;
 
 	FOnCheckHitDelegate OnCheckHitDelegate;
 

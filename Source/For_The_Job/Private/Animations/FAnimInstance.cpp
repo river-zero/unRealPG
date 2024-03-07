@@ -42,3 +42,10 @@ void UFAnimInstance::AnimNotify_AttackEnd() {
 		OnAttackEndDelegate.Broadcast();
 	}
 }
+
+void UFAnimInstance::PlayEquipMontage(const FName &SectionName) {
+	if (true == ::IsValid(EquipMontage)) {
+		Montage_Play(EquipMontage);
+		Montage_JumpToSection(SectionName, EquipMontage);
+	}
+}

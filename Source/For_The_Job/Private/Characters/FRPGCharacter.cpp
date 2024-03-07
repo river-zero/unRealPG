@@ -251,10 +251,26 @@ void AFRPGCharacter::StopJump() {
 }
 
 void AFRPGCharacter::EKeyPressed() {
+    UFAnimInstance *AnimInstance = Cast<UFAnimInstance>(GetMesh()->GetAnimInstance());
+    if (false == ::IsValid(AnimInstance)) {
+        return;
+    }
+
     AFWeapon *OverlappingWeapon = Cast< AFWeapon>(OverlappingItem);
+
     if (OverlappingWeapon) {
         OverlappingWeapon->Equip(GetMesh(), FName("RightHandSocket"));
         CharacterState = ECharacterState::ECS_EquippedOneHandedWeapon;
+        OverlappingItem = nullptr;
+        EquippedWeapon = OverlappingWeapon;
+    } else {
+        if (CanDisarm()) {
+            AnimInstance->PlayEquipMontage(FName("Unequip"));
+            CharacterState = ECharacterState::ECS_Unequipped;
+        } else if (CanArm()) {
+            AnimInstance->PlayEquipMontage(FName("Equip"));
+            CharacterState = ECharacterState::ECS_EquippedOneHandedWeapon;
+        }
     }
 }
 
@@ -296,7 +312,6 @@ void AFRPGCharacter::BeginCombo() {
         OnMontageEndedDelegate.BindUObject(this, &ThisClass::EndCombo);
         AnimInstance->Montage_SetEndDelegate(OnMontageEndedDelegate, AnimInstance->AttackMontage);
     }
-
 }
 
 void AFRPGCharacter::CheckCanNextCombo() {
@@ -320,4 +335,12 @@ void AFRPGCharacter::EndCombo(UAnimMontage *InAnimMontage, bool bInterrupted) {
     bIsAttackKeyPressed = false;
     ActionState = EActionState::EAS_Unoccupied;
     GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
+}
+
+bool AFRPGCharacter::CanDisarm() {
+    return ActionState == EActionState::EAS_Unoccupied && CharacterState != ECharacterState::ECS_Unequipped;
+}
+
+bool AFRPGCharacter::CanArm() {
+    return ActionState == EActionState::EAS_Unoccupied && CharacterState == ECharacterState::ECS_Unequipped && EquippedWeapon;
 }

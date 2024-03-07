@@ -9,7 +9,9 @@
 class UFInputConfigData;
 class UInputComponent;
 class UInputMappingContext;
+class UAnimMontage;
 class AFItem;
+class AFWeapon;
 
 UENUM()
 enum class EViewMode : uint8 {
@@ -75,7 +77,11 @@ private:
 	void CheckCanNextCombo();
 
 	UFUNCTION()
-	void EndCombo(class UAnimMontage *InAnimMontage, bool bInterrupted);
+	void EndCombo(UAnimMontage *InAnimMontage, bool bInterrupted);
+
+	bool CanDisarm();
+
+	bool CanArm();
 
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = RPGCharacter, Meta = (AllowPrivateAccess = true))
@@ -115,6 +121,9 @@ private:
 
 	// 무기 소지에 따른 애니메이션 재생을 위한 변수들 - - - - - - - -
 	ECharacterState CharacterState = ECharacterState::ECS_Unequipped;
+
+	UPROPERTY(VisibleAnywhere, Category = Weapon)
+	AFWeapon *EquippedWeapon;
 
 	// 콤보 공격을 위한 변수들 - - - - - - - - - - - - - - - - - - - 
 	EActionState ActionState = EActionState::EAS_Unoccupied;
