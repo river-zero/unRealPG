@@ -258,7 +258,7 @@ void AFRPGCharacter::EKeyPressed() {
     if (false == ::IsValid(AnimInstance)) {
         return;
     }
-
+    
     AFWeapon *OverlappingWeapon = Cast< AFWeapon>(OverlappingItem);
 
     if (OverlappingWeapon) {
