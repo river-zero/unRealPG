@@ -12,6 +12,7 @@
 #include "Items/Weapons/FWeapon.h"
 #include "Animations/FAnimInstance.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "Components/BoxComponent.h"
 
 AFRPGCharacter::AFRPGCharacter() {
 	PrimaryActorTick.bCanEverTick = true;
@@ -147,6 +148,8 @@ void AFRPGCharacter::BeginPlay() {
         AnimInstance->OnDisarmDelegate.AddDynamic(this, &ThisClass::Disarm);
         AnimInstance->OnArmDelegate.AddDynamic(this, &ThisClass::Arm);
         AnimInstance->OnFinishEquippingDelegate.AddDynamic(this, &ThisClass::FinishEquipping);
+        AnimInstance->OnEnableBoxCollisionDelegate.AddDynamic(this, &ThisClass::EnableBoxCollision);
+        AnimInstance->OnDisbleBoxCollisionDelegate.AddDynamic(this, &ThisClass::DisableBoxCollision);
     }
 }
 
@@ -364,4 +367,16 @@ void AFRPGCharacter::Arm() {
 
 void AFRPGCharacter::FinishEquipping() {
     ActionState = EActionState::EAS_Unoccupied;
+}
+
+void AFRPGCharacter::EnableBoxCollision() {
+    if (EquippedWeapon && EquippedWeapon->GetWeaponBox()) {
+        EquippedWeapon->GetWeaponBox()->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+    }
+}
+
+void AFRPGCharacter::DisableBoxCollision() {
+    if (EquippedWeapon && EquippedWeapon->GetWeaponBox()) {
+        EquippedWeapon->GetWeaponBox()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+    }
 }

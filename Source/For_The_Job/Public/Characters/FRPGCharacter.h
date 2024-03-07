@@ -47,7 +47,6 @@ protected:
 	virtual void BeginPlay() override;
 
 private:
-	// Enhanced Input을 이용한 콜백 함수들 - - - - - - - - - - - -
 	void Move(const FInputActionValue& InValue);
 
 	void Look(const FInputActionValue& InValue);
@@ -91,6 +90,12 @@ private:
 
 	UFUNCTION(BlueprintCallable)
 	void FinishEquipping();
+
+	UFUNCTION(BlueprintCallable)
+	void EnableBoxCollision();
+
+	UFUNCTION(BlueprintCallable)
+	void DisableBoxCollision();
 
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = RPGCharacter, Meta = (AllowPrivateAccess = true))

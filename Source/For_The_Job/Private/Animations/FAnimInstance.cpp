@@ -67,3 +67,15 @@ void UFAnimInstance::AnimNotify_FinishEquipping() {
 		OnFinishEquippingDelegate.Broadcast();
 	}
 }
+
+void UFAnimInstance::AnimNotify_EnableBoxCollision() {
+	if (true == OnEnableBoxCollisionDelegate.IsBound()) {
+		OnEnableBoxCollisionDelegate.Broadcast();
+	}
+}
+
+void UFAnimInstance::AnimNotify_DisableBoxCollision() {
+	if (true == OnDisbleBoxCollisionDelegate.IsBound()) {
+		OnDisbleBoxCollisionDelegate.Broadcast();
+	}
+}

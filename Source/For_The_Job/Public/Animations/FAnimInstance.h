@@ -10,6 +10,8 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnAttackEndDelegate);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnDisarmDelegate);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnArmDelegate);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnFinishEquippingDelegate);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnEnableBoxCollisionDelegate);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnDisbleBoxCollisionDelegate);
 
 UCLASS()
 class FOR_THE_JOB_API UFAnimInstance : public UAnimInstance {
@@ -41,6 +43,13 @@ private:
 
 	UFUNCTION()
 	void AnimNotify_FinishEquipping();
+
+	UFUNCTION()
+	void AnimNotify_EnableBoxCollision();
+
+	UFUNCTION()
+	void AnimNotify_DisableBoxCollision();
+
 
 public:
 	UPROPERTY(BlueprintReadOnly)
@@ -74,4 +83,8 @@ protected:
 	FOnArmDelegate OnArmDelegate;
 
 	FOnFinishEquippingDelegate OnFinishEquippingDelegate;
+
+	FOnEnableBoxCollisionDelegate OnEnableBoxCollisionDelegate;
+
+	FOnDisbleBoxCollisionDelegate OnDisbleBoxCollisionDelegate;
 };
