@@ -49,3 +49,21 @@ void UFAnimInstance::PlayEquipMontage(const FName &SectionName) {
 		Montage_JumpToSection(SectionName, EquipMontage);
 	}
 }
+
+void UFAnimInstance::AnimNotify_Disarm() {
+	if (true == OnDisarmDelegate.IsBound()) {
+		OnDisarmDelegate.Broadcast();
+	}
+}
+
+void UFAnimInstance::AnimNotify_Arm() {
+	if (true == OnArmDelegate.IsBound()) {
+		OnArmDelegate.Broadcast();
+	}
+}
+
+void UFAnimInstance::AnimNotify_FinishEquipping() {
+	if (true == OnFinishEquippingDelegate.IsBound()) {
+		OnFinishEquippingDelegate.Broadcast();
+	}
+}

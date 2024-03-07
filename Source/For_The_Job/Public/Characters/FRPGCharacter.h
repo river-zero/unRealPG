@@ -83,6 +83,15 @@ private:
 
 	bool CanArm();
 
+	UFUNCTION(BlueprintCallable)
+	void Disarm();
+
+	UFUNCTION(BlueprintCallable)
+	void Arm();
+
+	UFUNCTION(BlueprintCallable)
+	void FinishEquipping();
+
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = RPGCharacter, Meta = (AllowPrivateAccess = true))
 	TObjectPtr<UFInputConfigData> PlayerCharacterInputConfigData;

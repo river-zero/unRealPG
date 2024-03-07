@@ -7,6 +7,9 @@
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnCheckHitDelegate);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnAttackEndDelegate);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnDisarmDelegate);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnArmDelegate);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnFinishEquippingDelegate);
 
 UCLASS()
 class FOR_THE_JOB_API UFAnimInstance : public UAnimInstance {
@@ -29,6 +32,15 @@ private:
 	void AnimNotify_AttackEnd();
 
 	void PlayEquipMontage(const FName &SectionName);
+
+	UFUNCTION()
+	void AnimNotify_Disarm();
+
+	UFUNCTION()
+	void AnimNotify_Arm();
+
+	UFUNCTION()
+	void AnimNotify_FinishEquipping();
 
 public:
 	UPROPERTY(BlueprintReadOnly)
@@ -56,4 +68,10 @@ protected:
 	FOnCheckHitDelegate OnCheckHitDelegate;
 
 	FOnAttackEndDelegate OnAttackEndDelegate;
+
+	FOnDisarmDelegate OnDisarmDelegate;
+
+	FOnArmDelegate OnArmDelegate;
+
+	FOnFinishEquippingDelegate OnFinishEquippingDelegate;
 };

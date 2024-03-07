@@ -144,12 +144,15 @@ void AFRPGCharacter::BeginPlay() {
         AnimInstance->OnMontageEnded.AddDynamic(this, &ThisClass::OnAttackMontageEnded);
         AnimInstance->OnCheckHitDelegate.AddDynamic(this, &ThisClass::CheckHit);
         AnimInstance->OnAttackEndDelegate.AddDynamic(this, &ThisClass::CheckCanNextCombo);
+        AnimInstance->OnDisarmDelegate.AddDynamic(this, &ThisClass::Disarm);
+        AnimInstance->OnArmDelegate.AddDynamic(this, &ThisClass::Arm);
+        AnimInstance->OnFinishEquippingDelegate.AddDynamic(this, &ThisClass::FinishEquipping);
     }
 }
 
 void AFRPGCharacter::Move(const FInputActionValue &InValue) {
-    // 캐릭터가 공격 중인 경우 이동 제한을 위함
-    // if (ActionState == EActionState::EAS_Attacking) return;
+    // 캐릭터 이동 제한
+    if (ActionState != EActionState::EAS_Unoccupied) return;
 
     FVector2D MovementVector = InValue.Get<FVector2D>();
 
@@ -267,9 +270,11 @@ void AFRPGCharacter::EKeyPressed() {
         if (CanDisarm()) {
             AnimInstance->PlayEquipMontage(FName("Unequip"));
             CharacterState = ECharacterState::ECS_Unequipped;
+            ActionState = EActionState::EAS_EquippingWeapon;
         } else if (CanArm()) {
             AnimInstance->PlayEquipMontage(FName("Equip"));
             CharacterState = ECharacterState::ECS_EquippedOneHandedWeapon;
+            ActionState = EActionState::EAS_EquippingWeapon;
         }
     }
 }
@@ -343,4 +348,20 @@ bool AFRPGCharacter::CanDisarm() {
 
 bool AFRPGCharacter::CanArm() {
     return ActionState == EActionState::EAS_Unoccupied && CharacterState == ECharacterState::ECS_Unequipped && EquippedWeapon;
+}
+
+void AFRPGCharacter::Disarm() {
+    if (EquippedWeapon) {
+        EquippedWeapon->AttachMeshToSocket(GetMesh(), FName("SpineSocket"));
+    }
+}
+
+void AFRPGCharacter::Arm() {
+    if (EquippedWeapon) {
+        EquippedWeapon->AttachMeshToSocket(GetMesh(), FName("RightHandSocket"));
+    }
+}
+
+void AFRPGCharacter::FinishEquipping() {
+    ActionState = EActionState::EAS_Unoccupied;
 }
