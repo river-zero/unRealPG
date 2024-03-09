@@ -297,7 +297,7 @@ bool AFRPGCharacter::CanAttack() {
 }
 
 void AFRPGCharacter::CheckHit() {
-    UKismetSystemLibrary::PrintString(this, FString::Printf(TEXT("CheckHit() has been called.")));
+    // UKismetSystemLibrary::PrintString(this, FString::Printf(TEXT("CheckHit() has been called.")));
 }
 
 void AFRPGCharacter::BeginCombo() {
