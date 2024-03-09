@@ -2,6 +2,7 @@
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "For_The_Job/DebugMacros.h"
+#include "Kismet/KismetSystemLibrary.h"
 
 AFEnemy::AFEnemy() {
 	PrimaryActorTick.bCanEverTick = true;
@@ -44,5 +45,36 @@ void AFEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) {
 
 void AFEnemy::GetHit(const FVector &ImpactPoint) {
 	DRAW_SPHERE_COLOR(ImpactPoint, FColor::Orange);
-	PlayHitReactMontage(FName("FromLeft"));
+
+	// 내적을 이용해 전방 벡터와 타격 지점까지의 각도 계산
+	const FVector Forward = GetActorForwardVector();
+	const FVector ImpactLowered(ImpactPoint.X, ImpactPoint.Y, GetActorLocation().Z);
+	const FVector ToHit = (ImpactLowered - GetActorLocation()).GetSafeNormal();
+	const double CosTheta = FVector::DotProduct(Forward, ToHit);
+	double Theta = FMath::Acos(CosTheta);
+	Theta = FMath::RadiansToDegrees(Theta);
+
+	// 외적을 이용해 각도의 양수/음수 판별
+	const FVector CrossProduct = FVector::CrossProduct(Forward, ToHit);
+	if (CrossProduct.Z < 0) {
+		Theta *= -1.f;
+	}
+
+	FName Section("FromBack");
+	if (Theta >= -45.f && Theta < 45.f) {
+		Section = FName("FromFront");
+	} else if (Theta >= -135.f && Theta < -45.f) {
+		Section = FName("FromLeft");
+	} else if (Theta >= 45.f && Theta < 135.f) {
+		Section = FName("FromRight");
+	}
+	PlayHitReactMontage(Section);
+
+	UKismetSystemLibrary::DrawDebugArrow(this, GetActorLocation(), GetActorLocation() + CrossProduct * 100.f, 5.f, FColor::Blue, 5.f);
+	
+	if (GEngine) {
+		GEngine->AddOnScreenDebugMessage(1, 5.f, FColor::Green, FString::Printf(TEXT("Theta: %f"), Theta));
+	}
+	UKismetSystemLibrary::DrawDebugArrow(this, GetActorLocation(), GetActorLocation() + Forward * 60.f, 5.f, FColor::Red, 5.f);
+	UKismetSystemLibrary::DrawDebugArrow(this, GetActorLocation(), GetActorLocation() + ToHit * 60.f, 5.f, FColor::Green, 5.f);
 }
