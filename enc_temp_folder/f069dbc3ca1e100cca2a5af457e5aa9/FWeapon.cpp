@@ -66,7 +66,7 @@ void AFWeapon::OnBoxOverlap(UPrimitiveComponent *OverlappedComponent, AActor *Ot
 	TArray<AActor*> ActorsToIgnore;
 	ActorsToIgnore.Add(this);
 
-	// 중복 타격 무시
+	// 타격 지점이 딱 한개만 되도록 함
 	for (AActor *Actor : IgnoreActors) {
 		ActorsToIgnore.AddUnique(Actor);
 	}
@@ -92,6 +92,7 @@ void AFWeapon::OnBoxOverlap(UPrimitiveComponent *OverlappedComponent, AActor *Ot
 		if (HitInterface) {
 			HitInterface->GetHit(BoxHit.ImpactPoint);
 		}
+
 		IgnoreActors.AddUnique(BoxHit.GetActor());
 	}
 }

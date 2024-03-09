@@ -46,6 +46,10 @@ void AFEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) {
 void AFEnemy::GetHit(const FVector &ImpactPoint) {
 	DRAW_SPHERE_COLOR(ImpactPoint, FColor::Orange);
 
+	DirectionalHitReact(ImpactPoint);
+}
+
+void AFEnemy::DirectionalHitReact(const FVector &ImpactPoint) {
 	// 내적을 이용해 전방 벡터와 타격 지점까지의 각도 계산
 	const FVector Forward = GetActorForwardVector();
 	const FVector ImpactLowered(ImpactPoint.X, ImpactPoint.Y, GetActorLocation().Z);
@@ -71,7 +75,7 @@ void AFEnemy::GetHit(const FVector &ImpactPoint) {
 	PlayHitReactMontage(Section);
 
 	UKismetSystemLibrary::DrawDebugArrow(this, GetActorLocation(), GetActorLocation() + CrossProduct * 100.f, 5.f, FColor::Blue, 5.f);
-	
+
 	if (GEngine) {
 		GEngine->AddOnScreenDebugMessage(1, 5.f, FColor::Green, FString::Printf(TEXT("Theta: %f"), Theta));
 	}

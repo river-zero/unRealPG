@@ -12,6 +12,9 @@ class FOR_THE_JOB_API AFWeapon : public AFItem {
 	GENERATED_BODY()
 
 public:
+	TArray<AActor*> IgnoreActors;
+
+public:
 	AFWeapon();
 
 	void Equip(USceneComponent *InParent, FName InSocketName);
@@ -19,7 +22,7 @@ public:
 	void AttachMeshToSocket(USceneComponent *InParent, const FName &InSocketName);
 
 	FORCEINLINE UBoxComponent *GetWeaponBox() const { return WeaponBox; }
-	
+
 protected:
 	virtual void BeginPlay() override;
 

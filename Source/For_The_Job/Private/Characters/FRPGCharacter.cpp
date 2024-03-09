@@ -378,5 +378,6 @@ void AFRPGCharacter::EnableBoxCollision() {
 void AFRPGCharacter::DisableBoxCollision() {
     if (EquippedWeapon && EquippedWeapon->GetWeaponBox()) {
         EquippedWeapon->GetWeaponBox()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+        EquippedWeapon->IgnoreActors.Empty();
     }
 }
