@@ -4,6 +4,7 @@
 #include "Sound/SoundBase.h"
 #include "Components/SphereComponent.h"
 #include "Components/BoxComponent.h"
+#include "Interfaces/FHitInterface.h"
 
 AFWeapon::AFWeapon() {
 	WeaponBox = CreateDefaultSubobject<UBoxComponent>(TEXT("Weapon Box"));
@@ -78,4 +79,12 @@ void AFWeapon::OnBoxOverlap(UPrimitiveComponent *OverlappedComponent, AActor *Ot
 		BoxHit,
 		true
 	);
+
+	// 박스 충돌 시 GetHit 호출
+	if (BoxHit.GetActor()) {
+		IFHitInterface *HitInterface = Cast<IFHitInterface>(BoxHit.GetActor());
+		if (HitInterface) {
+			HitInterface->GetHit(BoxHit.ImpactPoint);
+		}
+	}
 }

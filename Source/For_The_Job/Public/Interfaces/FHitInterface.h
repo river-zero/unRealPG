@@ -13,5 +13,5 @@ class FOR_THE_JOB_API IFHitInterface {
 	GENERATED_BODY()
 
 public:
-	virtual void GetHit() = 0;
+	virtual void GetHit(const FVector &ImpactPoint) = 0;
 };
