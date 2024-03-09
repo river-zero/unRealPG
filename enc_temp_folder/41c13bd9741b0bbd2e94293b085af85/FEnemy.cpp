@@ -6,8 +6,8 @@
 AFEnemy::AFEnemy() {
 	PrimaryActorTick.bCanEverTick = true;
 
-	float CharacterHalfHeight = 87.f;
-	float CharacterRadius = 21.f;
+	float CharacterHalfHeight = 86.f;
+	float CharacterRadius = 20.f;
 
 	GetCapsuleComponent()->InitCapsuleSize(CharacterRadius, CharacterHalfHeight);
 
