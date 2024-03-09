@@ -11,6 +11,13 @@ UCLASS()
 class FOR_THE_JOB_API AFEnemy : public ACharacter, public IFHitInterface {
 	GENERATED_BODY()
 
+private:
+	UPROPERTY(EditDefaultsOnly, Category = Montages)
+	UAnimMontage *HitReactMontage;
+
+	UPROPERTY(EditAnywhere, Category = Sounds)
+	USoundBase *HitSound;
+
 public:
 	AFEnemy();
 
@@ -21,9 +28,6 @@ public:
 	virtual void GetHit(const FVector &ImpactPoint) override;
 
 	void DirectionalHitReact(const FVector &ImpactPoint);
-
-	UPROPERTY(EditDefaultsOnly, Category = Montages)
-	UAnimMontage *HitReactMontage;
 
 protected:
 	virtual void BeginPlay() override;

@@ -3,6 +3,7 @@
 #include "Components/CapsuleComponent.h"
 #include "For_The_Job/DebugMacros.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "Kismet/GameplayStatics.h"
 
 AFEnemy::AFEnemy() {
 	PrimaryActorTick.bCanEverTick = true;
@@ -47,6 +48,15 @@ void AFEnemy::GetHit(const FVector &ImpactPoint) {
 	DRAW_SPHERE_COLOR(ImpactPoint, FColor::Orange);
 
 	DirectionalHitReact(ImpactPoint);
+
+	// 피격음 재생
+	if (HitSound) {
+		UGameplayStatics::PlaySoundAtLocation(
+			this,
+			HitSound,
+			ImpactPoint
+		);
+	}
 }
 
 void AFEnemy::DirectionalHitReact(const FVector &ImpactPoint) {
