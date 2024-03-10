@@ -24,4 +24,12 @@ protected:
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	UGeometryCollectionComponent *GeometryCollection;
+
+	// 블루프린트 클래스를 C++에서 사용하기 위함
+	UPROPERTY(EditAnywhere, Category = "Breakable Properties")
+	TSubclassOf<class AFTreasure> TreasureClass;
+
+	// 캐릭터가 물체를 통과하지 못하도록 함
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	class UCapsuleComponent *Capsule;
 };

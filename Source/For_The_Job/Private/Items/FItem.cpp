@@ -31,7 +31,7 @@ float AFItem::TransformedCos() {
 
 void AFItem::OnSphereOverlap(UPrimitiveComponent *OverlappedComponent, AActor *OtherActor, UPrimitiveComponent *OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult &SweepResult) {
 	// 겹친 액터가 AFRPGCharacter 클래스의 인스턴스인 경우 해당 캐릭터의 OverlappingItem 멤버 변수를 현재 아이템으로 설정
-	AFRPGCharacter *RPGCharacter = Cast< AFRPGCharacter>(OtherActor);
+	AFRPGCharacter *RPGCharacter = Cast<AFRPGCharacter>(OtherActor);
 	if (RPGCharacter) {
 		RPGCharacter->SetOverlappingItem(this);
 	}
