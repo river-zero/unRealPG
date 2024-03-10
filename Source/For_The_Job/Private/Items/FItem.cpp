@@ -2,6 +2,7 @@
 #include "For_The_Job/DebugMacros.h"
 #include "Components/SphereComponent.h"
 #include "Characters/FRPGCharacter.h"
+#include "NiagaraComponent.h"
 
 AFItem::AFItem() {
 	PrimaryActorTick.bCanEverTick = true;
@@ -11,6 +12,9 @@ AFItem::AFItem() {
 
 	Sphere = CreateDefaultSubobject<USphereComponent>(TEXT("Sphere"));
 	Sphere->SetupAttachment(GetRootComponent());
+
+	EmbersEffect = CreateDefaultSubobject<UNiagaraComponent>(TEXT("Embers"));
+	EmbersEffect->SetupAttachment(GetRootComponent());
 }
 
 void AFItem::BeginPlay() {

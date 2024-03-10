@@ -9,7 +9,8 @@ public class For_The_Job : ModuleRules
 		PublicDependencyModuleNames.AddRange(new string[] { 
 			"Core", "CoreUObject", "Engine", "InputCore", 
 			"EnhancedInput", 
-			"GeometryCollectionEngine" 
+			"GeometryCollectionEngine",
+			"Niagara"
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });

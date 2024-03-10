@@ -5,6 +5,7 @@
 #include "Components/SphereComponent.h"
 #include "Components/BoxComponent.h"
 #include "Interfaces/FHitInterface.h"
+#include "NiagaraComponent.h"
 
 AFWeapon::AFWeapon() {
 	WeaponBox = CreateDefaultSubobject<UBoxComponent>(TEXT("Weapon Box"));
@@ -36,6 +37,11 @@ void AFWeapon::Equip(USceneComponent *InParent, FName InSocketName) {
 	// 무기의 원이 캐릭터 캡슐과 다시 중첩되어 EquipSound가 또 나오는 버그 예방
 	if (Sphere) {
 		Sphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	}
+
+	// 빛 무리 효과가 무기 장착 시 비활성화되도록 함
+	if (EmbersEffect) {
+		EmbersEffect->Deactivate();
 	}
 }
 

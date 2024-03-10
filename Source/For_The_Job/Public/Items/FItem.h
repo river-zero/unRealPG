@@ -56,6 +56,9 @@ protected:
 	USphereComponent *Sphere;
 
 	EItemState ItemState = EItemState::EIS_Hovering;
+
+	UPROPERTY(EditAnywhere)
+	class UNiagaraComponent *EmbersEffect;
 };
 
 template<typename T>
