@@ -90,7 +90,8 @@ void AFWeapon::OnBoxOverlap(UPrimitiveComponent *OverlappedComponent, AActor *Ot
 	if (BoxHit.GetActor()) {
 		IFHitInterface *HitInterface = Cast<IFHitInterface>(BoxHit.GetActor());
 		if (HitInterface) {
-			HitInterface->GetHit(BoxHit.ImpactPoint);
+			// 블루프린트에서 C++ 코드로 구현된 함수를 호출하는 데 사용
+			HitInterface->Execute_GetHit(BoxHit.GetActor(), BoxHit.ImpactPoint);
 		}
 		IgnoreActors.AddUnique(BoxHit.GetActor());
 

@@ -44,7 +44,7 @@ void AFEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 }
 
-void AFEnemy::GetHit(const FVector &ImpactPoint) {
+void AFEnemy::GetHit_Implementation(const FVector &ImpactPoint) {
 	// DRAW_SPHERE_COLOR(ImpactPoint, FColor::Orange);
 
 	DirectionalHitReact(ImpactPoint);

@@ -18,6 +18,6 @@ void AFBreakableActor::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
 }
 
-void AFBreakableActor::GetHit(const FVector &ImpactPoint) {
+void AFBreakableActor::GetHit_Implementation(const FVector &ImpactPoint) {
 
 }
