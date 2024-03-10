@@ -93,5 +93,8 @@ void AFWeapon::OnBoxOverlap(UPrimitiveComponent *OverlappedComponent, AActor *Ot
 			HitInterface->GetHit(BoxHit.ImpactPoint);
 		}
 		IgnoreActors.AddUnique(BoxHit.GetActor());
+
+		// Field System »£√‚
+		CreateFields(BoxHit.ImpactPoint);
 	}
 }
