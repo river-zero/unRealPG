@@ -73,9 +73,6 @@ void AFEnemy::Die() {
 		AnimInstance->Montage_JumpToSection(SelectionName, DieMontage);
 	}
 
-	if (HealthBarWidget) {
-		HealthBarWidget->SetVisibility(false);
-	}
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	SetLifeSpan(3.f);
 }
