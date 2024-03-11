@@ -11,7 +11,8 @@ public class For_The_Job : ModuleRules
 			"EnhancedInput", 
 			"GeometryCollectionEngine",
 			"Niagara",
-			"UMG"
+			"UMG",
+			"AIModule"
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });

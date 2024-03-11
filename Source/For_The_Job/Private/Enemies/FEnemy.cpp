@@ -7,6 +7,7 @@
 #include "Components/FAttributeComponent.h"
 #include "UI/FHealthBarComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "AIController.h"
 
 AFEnemy::AFEnemy() {
 	PrimaryActorTick.bCanEverTick = true;
@@ -40,8 +41,28 @@ AFEnemy::AFEnemy() {
 void AFEnemy::BeginPlay() {
 	Super::BeginPlay();
 
+	// 시작 시에 체력바 보이지 않게 설정
 	if (HealthBarWidget) {
 		HealthBarWidget->SetVisibility(false);
+	}
+
+	EnemyController = Cast<AAIController>(GetController());
+	if (EnemyController && PatrolTarget) {
+		// 목표 지점 및 허용 반경
+		FAIMoveRequest MoveRequest;
+		MoveRequest.SetGoalActor(PatrolTarget);
+		MoveRequest.SetAcceptanceRadius(15.f);
+
+		// 이동 요청
+		FNavPathSharedPtr NavPath;
+		EnemyController->MoveTo(MoveRequest, &NavPath);
+
+		// 경로의 모든 지점 시각적 표시
+		TArray<FNavPathPoint> &PathPoints = NavPath->GetPathPoints();
+		for (auto &Point : PathPoints) {
+			const FVector &Location = Point.Location;
+			DrawDebugSphere(GetWorld(), Location, 12.f, 12, FColor::Green, false, 10.f);
+		}
 	}
 }
 
@@ -95,18 +116,51 @@ void AFEnemy::PlayHitReactMontage(const FName &SectionName) {
 	}
 }
 
+bool AFEnemy::InTargetRange(AActor *Target, double Radius) {
+	const double DistanceToTarget = (Target->GetActorLocation() - GetActorLocation()).Size();
+
+	DRAW_SPHERE_SingleFrame(GetActorLocation());
+	DRAW_SPHERE_SingleFrame(Target->GetActorLocation());
+
+	return DistanceToTarget <= Radius;
+}
+
 void AFEnemy::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
 
 	// 적에서 공격을 준 대상까지의 거리 계산
 	if (CombatTarget) {
-		const double DistanceToTarget = (CombatTarget->GetActorLocation() - GetActorLocation()).Size();
-
 		// 일정거리 이상 벌어지면 체력바 숨김
-		if (DistanceToTarget > CombatRadius) {
+		if (!InTargetRange(CombatTarget, CombatRadius)) {
 			CombatTarget = nullptr;
 			if (HealthBarWidget) {
 				HealthBarWidget->SetVisibility(false);
+			}
+		}
+	}
+
+	// 랜덤으로 정찰 지점 이동
+	if (PatrolTarget && EnemyController) {
+		// 정찰 지점에 도착했다면 랜덤으로 새 정찰 지점을 선택해 이동
+		if (InTargetRange(PatrolTarget, PatrolRadius)) {
+			// 정찰 지점 중복 방지
+			TArray<AActor*> ValidTargets;
+			for (AActor *Target : PatrolTargets) {
+				if (Target != PatrolTarget) {
+					ValidTargets.AddUnique(Target);
+				}
+			}
+
+			const int32 NumPatrolTargets = PatrolTargets.Num();
+			if (NumPatrolTargets > 0) {
+				const int32 TargetSelection = FMath::RandRange(0, NumPatrolTargets - 1);
+				AActor *Target = PatrolTargets[TargetSelection];
+				PatrolTarget = Target;
+
+				FAIMoveRequest MoveRequest;
+				MoveRequest.SetGoalActor(PatrolTarget);
+				MoveRequest.SetAcceptanceRadius(15.f);
+				EnemyController->MoveTo(MoveRequest);
 			}
 		}
 	}
