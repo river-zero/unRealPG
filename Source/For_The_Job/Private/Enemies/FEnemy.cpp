@@ -5,7 +5,7 @@
 #include "Kismet/KismetSystemLibrary.h"
 #include "Kismet/GameplayStatics.h"
 #include "Components/FAttributeComponent.h"
-#include "Components/WidgetComponent.h"
+#include "UI/FHealthBarComponent.h"
 
 AFEnemy::AFEnemy() {
 	PrimaryActorTick.bCanEverTick = true;
@@ -26,12 +26,16 @@ AFEnemy::AFEnemy() {
 	GetMesh()->SetGenerateOverlapEvents(true);
 
 	Attributes = CreateDefaultSubobject<UFAttributeComponent>(TEXT("Attributes"));
-	HealthBarWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("HealthBar"));
+	HealthBarWidget = CreateDefaultSubobject<UFHealthBarComponent>(TEXT("HealthBar"));
 	HealthBarWidget->SetupAttachment(GetRootComponent());
 }
 
 void AFEnemy::BeginPlay() {
 	Super::BeginPlay();
+
+	if (HealthBarWidget) {
+		HealthBarWidget->SetHealthPercent(1.f);
+	}
 }
 
 void AFEnemy::PlayHitReactMontage(const FName &SectionName) {

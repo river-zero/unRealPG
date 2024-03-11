@@ -7,7 +7,7 @@
 
 class UAnimMontage;
 class UFAttributeComponent;
-class UWidgetComponent;
+class UFHealthBarComponent;
 
 UCLASS()
 class FOR_THE_JOB_API AFEnemy : public ACharacter, public IFHitInterface {
@@ -27,7 +27,7 @@ private:
 	UFAttributeComponent *Attributes;
 
 	UPROPERTY(VisibleAnywhere)
-	UWidgetComponent *HealthBarWidget;
+	UFHealthBarComponent *HealthBarWidget;
 
 public:
 	AFEnemy();
