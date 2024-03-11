@@ -22,7 +22,11 @@ AFWeapon::AFWeapon() {
 	BoxTraceEnd->SetupAttachment(GetRootComponent());
 }
 
-void AFWeapon::Equip(USceneComponent *InParent, FName InSocketName) {
+void AFWeapon::Equip(USceneComponent *InParent, FName InSocketName, AActor *NewOwner, APawn *NewInstigator) {
+	// 무기의 소유자와 유발자 설정
+	SetOwner(NewOwner);
+	SetInstigator(NewInstigator);
+
 	AttachMeshToSocket(InParent, InSocketName);
 	ItemState = EItemState::EIS_Equipped;
 
@@ -103,5 +107,13 @@ void AFWeapon::OnBoxOverlap(UPrimitiveComponent *OverlappedComponent, AActor *Ot
 
 		// Field System 호출
 		CreateFields(BoxHit.ImpactPoint);
+
+		UGameplayStatics::ApplyDamage(
+			BoxHit.GetActor(),
+			Damage,
+			GetInstigator()->GetController(),
+			this,
+			UDamageType::StaticClass()
+		);
 	}
 }

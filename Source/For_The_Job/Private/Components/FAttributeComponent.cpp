@@ -1,5 +1,13 @@
 #include "Components/FAttributeComponent.h"
 
+void UFAttributeComponent::ReceiveDamage(float Damage) {
+	Health = FMath::Clamp(Health - Damage, 0.f, MaxHealth);
+}
+
+float UFAttributeComponent::GetHealthPercent() {
+	return Health / MaxHealth;
+}
+
 UFAttributeComponent::UFAttributeComponent() {
 	PrimaryComponentTick.bCanEverTick = true;
 }
