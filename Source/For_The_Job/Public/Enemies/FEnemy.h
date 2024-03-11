@@ -6,6 +6,8 @@
 #include "FEnemy.generated.h"
 
 class UAnimMontage;
+class UFAttributeComponent;
+class UWidgetComponent;
 
 UCLASS()
 class FOR_THE_JOB_API AFEnemy : public ACharacter, public IFHitInterface {
@@ -20,6 +22,12 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = VisualEffects)
 	UParticleSystem *HitParticles;
+
+	UPROPERTY(VisibleAnywhere)
+	UFAttributeComponent *Attributes;
+
+	UPROPERTY(VisibleAnywhere)
+	UWidgetComponent *HealthBarWidget;
 
 public:
 	AFEnemy();

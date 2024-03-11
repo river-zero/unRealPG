@@ -10,7 +10,8 @@ public class For_The_Job : ModuleRules
 			"Core", "CoreUObject", "Engine", "InputCore", 
 			"EnhancedInput", 
 			"GeometryCollectionEngine",
-			"Niagara"
+			"Niagara",
+			"UMG"
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });

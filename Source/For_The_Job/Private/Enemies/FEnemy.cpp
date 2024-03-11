@@ -4,6 +4,8 @@
 #include "For_The_Job/DebugMacros.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Kismet/GameplayStatics.h"
+#include "Components/FAttributeComponent.h"
+#include "Components/WidgetComponent.h"
 
 AFEnemy::AFEnemy() {
 	PrimaryActorTick.bCanEverTick = true;
@@ -22,6 +24,10 @@ AFEnemy::AFEnemy() {
 	GetMesh()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Camera, ECollisionResponse::ECR_Ignore);
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Camera, ECollisionResponse::ECR_Ignore);
 	GetMesh()->SetGenerateOverlapEvents(true);
+
+	Attributes = CreateDefaultSubobject<UFAttributeComponent>(TEXT("Attributes"));
+	HealthBarWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("HealthBar"));
+	HealthBarWidget->SetupAttachment(GetRootComponent());
 }
 
 void AFEnemy::BeginPlay() {
