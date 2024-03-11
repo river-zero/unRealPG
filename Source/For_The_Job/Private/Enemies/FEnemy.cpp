@@ -6,6 +6,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Components/FAttributeComponent.h"
 #include "UI/FHealthBarComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 AFEnemy::AFEnemy() {
 	PrimaryActorTick.bCanEverTick = true;
@@ -28,6 +29,12 @@ AFEnemy::AFEnemy() {
 	Attributes = CreateDefaultSubobject<UFAttributeComponent>(TEXT("Attributes"));
 	HealthBarWidget = CreateDefaultSubobject<UFHealthBarComponent>(TEXT("HealthBar"));
 	HealthBarWidget->SetupAttachment(GetRootComponent());
+
+	// 캐릭터의 이동과 회전이 자연스럽도록 함
+	GetCharacterMovement()->bOrientRotationToMovement = true;
+	bUseControllerRotationPitch = false;
+	bUseControllerRotationRoll = false;
+	bUseControllerRotationYaw = false;
 }
 
 void AFEnemy::BeginPlay() {
