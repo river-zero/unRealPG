@@ -98,6 +98,14 @@ void AFWeapon::OnBoxOverlap(UPrimitiveComponent *OverlappedComponent, AActor *Ot
 
 	// 박스 충돌 시 GetHit 호출
 	if (BoxHit.GetActor()) {
+		UGameplayStatics::ApplyDamage(
+			BoxHit.GetActor(),
+			Damage,
+			GetInstigator()->GetController(),
+			this,
+			UDamageType::StaticClass()
+		);
+
 		IFHitInterface *HitInterface = Cast<IFHitInterface>(BoxHit.GetActor());
 		if (HitInterface) {
 			// 블루프린트에서 C++ 코드로 구현된 함수를 호출하는 데 사용
@@ -107,13 +115,5 @@ void AFWeapon::OnBoxOverlap(UPrimitiveComponent *OverlappedComponent, AActor *Ot
 
 		// Field System 호출
 		CreateFields(BoxHit.ImpactPoint);
-
-		UGameplayStatics::ApplyDamage(
-			BoxHit.GetActor(),
-			Damage,
-			GetInstigator()->GetController(),
-			this,
-			UDamageType::StaticClass()
-		);
 	}
 }

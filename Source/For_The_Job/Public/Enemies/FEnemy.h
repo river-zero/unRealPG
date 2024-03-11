@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Interfaces/FHitInterface.h"
+#include "Characters/CharacterType.h"
 #include "FEnemy.generated.h"
 
 class UAnimMontage;
@@ -13,9 +14,16 @@ UCLASS()
 class FOR_THE_JOB_API AFEnemy : public ACharacter, public IFHitInterface {
 	GENERATED_BODY()
 
+protected:
+	UPROPERTY(BlueprintReadOnly)
+	EDeathPose DeathPose = EDeathPose::EDP_Alive;
+
 private:
 	UPROPERTY(EditDefaultsOnly, Category = Montages)
 	UAnimMontage *HitReactMontage;
+
+	UPROPERTY(EditDefaultsOnly, Category = Montages)
+	UAnimMontage *DieMontage;
 
 	UPROPERTY(EditAnywhere, Category = Sounds)
 	USoundBase *HitSound;
@@ -45,5 +53,7 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-	void PlayHitReactMontage(const FName &SectionName);
+	void Die();
+
+	void PlayHitReactMontage(const FName &SelectionName);
 };

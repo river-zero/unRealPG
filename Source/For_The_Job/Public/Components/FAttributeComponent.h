@@ -13,6 +13,8 @@ public:
 
 	float GetHealthPercent();
 
+	bool IsAlive();
+
 private:
 	UPROPERTY(EditAnywhere, Category = "Actor Attributes")
 	float Health;

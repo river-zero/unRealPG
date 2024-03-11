@@ -8,6 +8,10 @@ float UFAttributeComponent::GetHealthPercent() {
 	return Health / MaxHealth;
 }
 
+bool UFAttributeComponent::IsAlive() {
+	return Health > 0.f;
+}
+
 UFAttributeComponent::UFAttributeComponent() {
 	PrimaryComponentTick.bCanEverTick = true;
 }
