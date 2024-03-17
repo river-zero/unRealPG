@@ -1,13 +1,14 @@
 #include "Enemies/FEnemy.h"
+#include "AIController.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/CapsuleComponent.h"
-#include "For_The_Job/DebugMacros.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Kismet/GameplayStatics.h"
 #include "Components/FAttributeComponent.h"
 #include "UI/FHealthBarComponent.h"
-#include "GameFramework/CharacterMovementComponent.h"
-#include "AIController.h"
+#include "Perception/PawnSensingComponent.h"
+#include "For_The_Job/DebugMacros.h"
 
 AFEnemy::AFEnemy() {
 	PrimaryActorTick.bCanEverTick = true;
@@ -36,6 +37,10 @@ AFEnemy::AFEnemy() {
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationRoll = false;
 	bUseControllerRotationYaw = false;
+
+	PawnSensing = CreateDefaultSubobject<UPawnSensingComponent>(TEXT("PawnSensing"));
+	PawnSensing->SightRadius = 4000.f;
+	PawnSensing->SetPeripheralVisionAngle(45.f);
 }
 
 void AFEnemy::BeginPlay() {
@@ -48,6 +53,10 @@ void AFEnemy::BeginPlay() {
 
 	EnemyController = Cast<AAIController>(GetController());
 	MoveToTarget(PatrolTarget);
+
+	if (PawnSensing) {
+		PawnSensing->OnSeePawn.AddDynamic(this, &AFEnemy::PawnSeen);
+	}
 }
 
 void AFEnemy::Die() {
@@ -137,6 +146,20 @@ AActor *AFEnemy::ChoosePatrolTarget() {
 	return nullptr;
 }
 
+void AFEnemy::PawnSeen(APawn *SeenPawn) {
+	if (EnemyState == EEnemyState::EES_Chasing) return;
+
+	if (SeenPawn->ActorHasTag(FName("RPGCharacter"))) {
+		EnemyState = EEnemyState::EES_Chasing;
+		GetWorldTimerManager().ClearTimer(PatrolTimer);
+		GetCharacterMovement()->MaxWalkSpeed = 300.f;
+		CombatTarget = SeenPawn;
+		MoveToTarget(CombatTarget);
+
+		UE_LOG(LogTemp, Warning, TEXT("Seen Pawn, now Chasing"));
+	}
+}
+
 void AFEnemy::PatrolTimerFinished() {
 	MoveToTarget(PatrolTarget);
 }
@@ -144,8 +167,11 @@ void AFEnemy::PatrolTimerFinished() {
 void AFEnemy::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
 
-	CheckCombatTarget();
-	CheckPatrolTarget();
+	if (EnemyState > EEnemyState::EES_Patrolling) {
+		CheckCombatTarget();
+	} else {
+		CheckPatrolTarget();
+	}
 }
 
 void AFEnemy::CheckPatrolTarget() {

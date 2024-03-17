@@ -9,6 +9,7 @@
 class UAnimMontage;
 class UFAttributeComponent;
 class UFHealthBarComponent;
+class UPawnSensingComponent;
 
 UCLASS()
 class FOR_THE_JOB_API AFEnemy : public ACharacter, public IFHitInterface {
@@ -63,6 +64,11 @@ private:
 	UPROPERTY(EditAnywhere, Category = "AI Navigation")
 	float WaitMax = 10.f;
 
+	UPROPERTY(VisibleAnywhere)
+	UPawnSensingComponent *PawnSensing;
+
+	EEnemyState EnemyState = EEnemyState::EES_Patrolling;
+
 public:
 	AFEnemy();
 
@@ -92,6 +98,9 @@ protected:
 	void MoveToTarget(AActor *Target);
 
 	AActor *ChoosePatrolTarget();
+
+	UFUNCTION()
+	void PawnSeen(APawn *SeenPawn);
 
 private:
 	void PatrolTimerFinished();

@@ -132,6 +132,8 @@ void AFRPGCharacter::OnAttackMontageEnded(UAnimMontage *Montage, bool bInterrupt
 void AFRPGCharacter::BeginPlay() {
 	Super::BeginPlay();
 
+    Tags.Add(FName("RPGCharacter"));
+
     APlayerController* PlayerController = Cast<APlayerController>(GetController());
     if (true == ::IsValid(PlayerController)) {
         UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer());
