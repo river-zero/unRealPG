@@ -57,12 +57,6 @@ private:
 
 	FTimerHandle PatrolTimer;
 
-	UPROPERTY(EditAnywhere, Category = "AI Navigation")
-	float WaitMin = 5.f;
-
-	UPROPERTY(EditAnywhere, Category = "AI Navigation")
-	float WaitMax = 10.f;
-
 public:
 	AFEnemy();
 

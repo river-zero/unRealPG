@@ -144,28 +144,21 @@ void AFEnemy::PatrolTimerFinished() {
 void AFEnemy::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
 
-	CheckCombatTarget();
-	CheckPatrolTarget();
-}
-
-void AFEnemy::CheckPatrolTarget() {
-	// 랜덤 타겟 지정하고 시간 지연 후 이동
-	if (InTargetRange(PatrolTarget, PatrolRadius)) {
-		PatrolTarget = ChoosePatrolTarget();
-		const float WaitTime = FMath::RandRange(WaitMin, WaitMax);
-		GetWorldTimerManager().SetTimer(PatrolTimer, this, &AFEnemy::PatrolTimerFinished, WaitTime);
-	}
-}
-
-void AFEnemy::CheckCombatTarget() {
+	// 적에서 공격을 준 대상까지의 거리 계산
 	if (CombatTarget) {
-		// 범위 내에 없다면 채력바 숨김
+		// 일정거리 이상 벌어지면 체력바 숨김
 		if (!InTargetRange(CombatTarget, CombatRadius)) {
 			CombatTarget = nullptr;
 			if (HealthBarWidget) {
 				HealthBarWidget->SetVisibility(false);
 			}
 		}
+	}
+
+	// 랜덤 타겟 지정하고 5초 후 이동
+	if (InTargetRange(PatrolTarget, PatrolRadius)) {
+		PatrolTarget = ChoosePatrolTarget();
+		GetWorldTimerManager().SetTimer(PatrolTimer, this, &AFEnemy::PatrolTimerFinished, 5.f);
 	}
 }
 
