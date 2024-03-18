@@ -1,18 +1,15 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Character.h"
-#include "Interfaces/FHitInterface.h"
+#include "Characters/FCharacter.h"
 #include "Characters/CharacterType.h"
 #include "FEnemy.generated.h"
 
-class UAnimMontage;
-class UFAttributeComponent;
 class UFHealthBarComponent;
 class UPawnSensingComponent;
 
 UCLASS()
-class FOR_THE_JOB_API AFEnemy : public ACharacter, public IFHitInterface {
+class FOR_THE_JOB_API AFEnemy : public AFCharacter {
 	GENERATED_BODY()
 
 protected:
@@ -20,21 +17,6 @@ protected:
 	EDeathPose DeathPose = EDeathPose::EDP_Alive;
 
 private:
-	UPROPERTY(EditDefaultsOnly, Category = Montages)
-	UAnimMontage *HitReactMontage;
-
-	UPROPERTY(EditDefaultsOnly, Category = Montages)
-	UAnimMontage *DieMontage;
-
-	UPROPERTY(EditAnywhere, Category = Sounds)
-	USoundBase *HitSound;
-
-	UPROPERTY(EditAnywhere, Category = VisualEffects)
-	UParticleSystem *HitParticles;
-
-	UPROPERTY(VisibleAnywhere)
-	UFAttributeComponent *Attributes;
-
 	UPROPERTY(VisibleAnywhere)
 	UFHealthBarComponent *HealthBarWidget;
 
@@ -85,16 +67,12 @@ public:
 
 	virtual void GetHit_Implementation(const FVector &ImpactPoint) override;
 
-	void DirectionalHitReact(const FVector &ImpactPoint);
-
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const &DamageEvent, class AController *EventInstigator, AActor *DamageCauser) override;
 
 protected:
 	virtual void BeginPlay() override;
 
-	void Die();
-
-	void PlayHitReactMontage(const FName &SelectionName);
+	virtual void Die() override;
 
 	bool InTargetRange(AActor *Target, double Radius);
 

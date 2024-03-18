@@ -6,12 +6,13 @@
 #include "Characters/CharacterType.h"
 #include "FRPGCharacter.generated.h"
 
+class USpringArmComponent;
+class UCameraComponent;
 class UFInputConfigData;
 class UInputComponent;
 class UInputMappingContext;
 class UAnimMontage;
 class AFItem;
-class AFWeapon;
 
 UENUM()
 enum class EViewMode : uint8 {
@@ -63,9 +64,9 @@ private:
 
 	void EKeyPressed();
 
-	void Attack();
+	virtual void Attack() override;
 
-	bool CanAttack();
+	virtual bool CanAttack() override;
 
 	UFUNCTION()
 	void CheckHit();
@@ -91,11 +92,12 @@ private:
 	UFUNCTION(BlueprintCallable)
 	void FinishEquipping();
 
-	UFUNCTION(BlueprintCallable)
-	void EnableBoxCollision();
+protected:
+	UPROPERTY(VisibleAnywhere)
+	USpringArmComponent *CameraBoom;
 
-	UFUNCTION(BlueprintCallable)
-	void DisableBoxCollision();
+	UPROPERTY(VisibleAnywhere)
+	UCameraComponent *ViewCamera;
 
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = RPGCharacter, Meta = (AllowPrivateAccess = true))
@@ -135,9 +137,6 @@ private:
 
 	// 무기 소지에 따른 애니메이션 재생을 위한 변수들 - - - - - - - -
 	ECharacterState CharacterState = ECharacterState::ECS_Unequipped;
-
-	UPROPERTY(VisibleAnywhere, Category = Weapon)
-	AFWeapon *EquippedWeapon;
 
 	// 콤보 공격을 위한 변수들 - - - - - - - - - - - - - - - - - - - 
 	EActionState ActionState = EActionState::EAS_Unoccupied;

@@ -2,29 +2,66 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Interfaces/FHitInterface.h"
 #include "FCharacter.generated.h"
 
-class USpringArmComponent;
-class UCameraComponent;
+class AFWeapon;
+class UFAttributeComponent;
+class UAnimMontage;
 
 UCLASS()
-class FOR_THE_JOB_API AFCharacter : public ACharacter {
+class FOR_THE_JOB_API AFCharacter : public ACharacter, public IFHitInterface {
 	GENERATED_BODY()
+
+protected:
+	UPROPERTY(VisibleAnywhere, Category = Weapon)
+	AFWeapon *EquippedWeapon;
+
+	UPROPERTY(EditDefaultsOnly, Category = Montages)
+	UAnimMontage *AttackAnimation;
+
+	UPROPERTY(EditDefaultsOnly, Category = Montages)
+	UAnimMontage *HitReactMontage;
+
+	UPROPERTY(EditAnywhere, Category = Sounds)
+	USoundBase *HitSound;
+
+	UPROPERTY(EditAnywhere, Category = VisualEffects)
+	UParticleSystem *HitParticles;
+
+	UPROPERTY(EditDefaultsOnly, Category = Montages)
+	UAnimMontage *DieMontage;
+
+	UPROPERTY(VisibleAnywhere)
+	UFAttributeComponent *Attributes;
+
+public:
+	UFUNCTION(BlueprintCallable)
+	void EnableBoxCollision();
+
+	UFUNCTION(BlueprintCallable)
+	void DisableBoxCollision();
 
 public:
 	AFCharacter();
 
 	virtual void Tick(float DeltaTime) override;
 
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
 protected:
 	virtual void BeginPlay() override;
 
-protected:
-	UPROPERTY(VisibleAnywhere)
-	USpringArmComponent* CameraBoom;
+	virtual void Attack();
 
-	UPROPERTY(VisibleAnywhere)
-	UCameraComponent* ViewCamera;
+	virtual void Die();
+
+	virtual void PlayAttackAnimation();
+
+	void PlayHitReactMontage(const FName &SelectionName);
+
+	void DirectionalHitReact(const FVector &ImpactPoint);
+
+	virtual bool CanAttack();
+
+	UFUNCTION(BlueprintCallable)
+	virtual void AttackEnd();
 };

@@ -16,6 +16,28 @@
 
 AFRPGCharacter::AFRPGCharacter() {
 	PrimaryActorTick.bCanEverTick = true;
+
+    float CharacterHalfHeight = 90.f;
+    float CharacterRadius = 35.f;
+
+    GetCapsuleComponent()->InitCapsuleSize(CharacterRadius, CharacterHalfHeight);
+
+    FVector PivotPosition(0.f, 0.f, -CharacterHalfHeight);
+    FRotator PivotRotation(0.f, -90.f, 0.f);
+    GetMesh()->SetRelativeLocationAndRotation(PivotPosition, PivotRotation);
+
+    CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
+    CameraBoom->SetupAttachment(GetRootComponent());
+    CameraBoom->TargetArmLength = 400.f;
+
+    ViewCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("ViewCamera"));
+    ViewCamera->SetupAttachment(CameraBoom);
+
+    GetCharacterMovement()->MaxWalkSpeed = 300.f;
+    GetCharacterMovement()->MinAnalogWalkSpeed = 20.f;
+    GetCharacterMovement()->JumpZVelocity = 500.f;
+    GetCharacterMovement()->AirControl = 0.35f;
+    GetCharacterMovement()->BrakingDecelerationWalking = 2000.f;
 }
 
 void AFRPGCharacter::Tick(float DeltaSeconds) {
@@ -369,17 +391,4 @@ void AFRPGCharacter::Arm() {
 
 void AFRPGCharacter::FinishEquipping() {
     ActionState = EActionState::EAS_Unoccupied;
-}
-
-void AFRPGCharacter::EnableBoxCollision() {
-    if (EquippedWeapon && EquippedWeapon->GetWeaponBox()) {
-        EquippedWeapon->GetWeaponBox()->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-    }
-}
-
-void AFRPGCharacter::DisableBoxCollision() {
-    if (EquippedWeapon && EquippedWeapon->GetWeaponBox()) {
-        EquippedWeapon->GetWeaponBox()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-        EquippedWeapon->IgnoreActors.Empty();
-    }
 }
