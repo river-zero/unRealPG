@@ -258,10 +258,3 @@ float AFEnemy::TakeDamage(float DamageAmount, FDamageEvent const &DamageEvent, A
 
 	return DamageAmount;
 }
-
-void AFEnemy::Destroyed() {
-	if (EquippedWeapon) {
-		// Àû Á×À½ ½Ã ¹«±âµµ ÆÄ±«
-		EquippedWeapon->Destroy();
-	}
-}
