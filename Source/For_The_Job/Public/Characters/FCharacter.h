@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Interfaces/FHitInterface.h"
+#include "Characters/CharacterType.h"
 #include "FCharacter.generated.h"
 
 class AFWeapon;
@@ -13,6 +14,19 @@ UCLASS()
 class FOR_THE_JOB_API AFCharacter : public ACharacter, public IFHitInterface {
 	GENERATED_BODY()
 
+private:
+	UPROPERTY(EditAnywhere, Category = Sounds)
+	USoundBase *HitSound;
+
+	UPROPERTY(EditAnywhere, Category = VisualEffects)
+	UParticleSystem *HitParticles;
+
+	UPROPERTY(EditAnywhere, Category = Combat)
+	TArray<FName> AttackMontageSections;
+
+	UPROPERTY(EditAnywhere, Category = Combat)
+	TArray<FName> DeathMontageSections;
+
 protected:
 	UPROPERTY(VisibleAnywhere, Category = Weapon)
 	AFWeapon *EquippedWeapon;
@@ -22,12 +36,6 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = Montages)
 	UAnimMontage *HitReactMontage;
-
-	UPROPERTY(EditAnywhere, Category = Sounds)
-	USoundBase *HitSound;
-
-	UPROPERTY(EditAnywhere, Category = VisualEffects)
-	UParticleSystem *HitParticles;
 
 	UPROPERTY(EditDefaultsOnly, Category = Montages)
 	UAnimMontage *DieMontage;
@@ -54,7 +62,9 @@ protected:
 
 	virtual void Die();
 
-	virtual void PlayAttackAnimation();
+	virtual int32 PlayAttackAnimation();
+
+	virtual int32 PlayDeathMontage();
 
 	void PlayHitReactMontage(const FName &SelectionName);
 
@@ -62,6 +72,21 @@ protected:
 
 	virtual bool CanAttack();
 
+	bool IsAlive();
+
 	UFUNCTION(BlueprintCallable)
 	virtual void AttackEnd();
+
+	void PlayHitSound(const FVector &ImpactPoint);
+
+	void SpawnHitParticles(const FVector &ImpactPoint);
+
+	virtual void HandleDamage(float DamageAmount);
+
+	void DisableCapsule();
+
+private:
+	void PlayMontageSection(UAnimMontage *Montage, const FName &SectionName);
+
+	int32 PlayRandomMontageSection(UAnimMontage *Montage, const TArray<FName> &SectionNames);
 };

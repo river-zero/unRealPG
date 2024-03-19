@@ -14,7 +14,13 @@ class FOR_THE_JOB_API AFEnemy : public AFCharacter {
 
 protected:
 	UPROPERTY(BlueprintReadOnly)
-	EDeathPose DeathPose = EDeathPose::EDP_Alive;
+	TEnumAsByte<EDeathPose> DeathPose;
+
+	UPROPERTY(BlueprintReadOnly)
+	EEnemyState EnemyState = EEnemyState::EES_Patrolling;
+
+	UPROPERTY(EditAnywhere, Category = Combat)
+	float DeathLifeSpan = 5.f;
 
 private:
 	UPROPERTY(VisibleAnywhere)
@@ -52,10 +58,23 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	UPawnSensingComponent *PawnSensing;
 
-	EEnemyState EnemyState = EEnemyState::EES_Patrolling;
-
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<class AFWeapon> WeaponClass;
+
+	UPROPERTY(EditAnywhere, Category = Combat)
+	float PatrollingSpeed = 120.f;
+
+	UPROPERTY(EditAnywhere, Category = Combat)
+	float ChasingSpeed = 300.f;
+
+	UPROPERTY(EditAnywhere, Category = Combat)
+	FTimerHandle AttackTimer;
+
+	UPROPERTY(EditAnywhere, Category = Combat)
+	float AttackMin = 0.5f;
+
+	UPROPERTY(EditAnywhere, Category = Combat)
+	float AttackMax = 1.f;
 
 public:
 	AFEnemy();
@@ -65,8 +84,6 @@ public:
 	void CheckPatrolTarget();
 
 	void CheckCombatTarget();
-
-	virtual void SetupPlayerInputComponent(class UInputComponent *PlayerInputComponent) override;
 
 	virtual void GetHit_Implementation(const FVector &ImpactPoint) override;
 
@@ -90,8 +107,42 @@ protected:
 
 	virtual void Attack() override;
 
-	virtual void PlayAttackAnimation() override;
+	virtual bool CanAttack() override;
+
+	virtual void HandleDamage(float DamageAmount) override;
+
+	virtual int32 PlayDeathMontage() override;
 
 private:
 	void PatrolTimerFinished();
+
+	void HideHealthBar();
+
+	void ShowHealthBar();
+
+	void LoseInterest();
+
+	void StartPatrolling();
+
+	void ChaseTarget();
+
+	bool IsOutsideCombatRadius();
+
+	bool IsOutsideAttackRadius();
+
+	bool IsInsideAttackRadius();
+
+	bool IsChasing();
+
+	bool IsAttacking();
+
+	bool IsDead();
+
+	bool IsEngaged();
+
+	void StartAttackTimer();
+
+	void ClearAttackTimer();
+
+	void ClearPatrolTimer();
 };

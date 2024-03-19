@@ -84,7 +84,6 @@ void AFEnemy::Die() {
 	HideHealthBar();
 	DisableCapsule();
 	SetLifeSpan(DeathLifeSpan);
-	GetCharacterMovement()->bOrientRotationToMovement = false;
 }
 
 bool AFEnemy::InTargetRange(AActor *Target, double Radius) {
