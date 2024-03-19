@@ -88,6 +88,10 @@ protected:
 	UFUNCTION()
 	void PawnSeen(APawn *SeenPawn);
 
+	virtual void Attack() override;
+
+	virtual void PlayAttackAnimation() override;
+
 private:
 	void PatrolTimerFinished();
 };

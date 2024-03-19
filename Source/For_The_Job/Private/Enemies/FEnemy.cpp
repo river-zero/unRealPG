@@ -124,7 +124,7 @@ void AFEnemy::MoveToTarget(AActor *Target) {
 
 	FAIMoveRequest MoveRequest;
 	MoveRequest.SetGoalActor(Target);
-	MoveRequest.SetAcceptanceRadius(15.f);
+	MoveRequest.SetAcceptanceRadius(40.f);
 	EnemyController->MoveTo(MoveRequest);
 }
 
@@ -157,6 +157,34 @@ void AFEnemy::PawnSeen(APawn *SeenPawn) {
 			EnemyState = EEnemyState::EES_Chasing;
 			MoveToTarget(CombatTarget);
 		}
+	}
+}
+
+void AFEnemy::Attack() {
+	PlayAttackAnimation();
+}
+
+void AFEnemy::PlayAttackAnimation() {
+	UAnimInstance *AnimInstnace = GetMesh()->GetAnimInstance();
+	if (AnimInstnace && AttackAnimation) {
+		AnimInstnace->Montage_Play(AttackAnimation);
+		const int32 Selection = FMath::RandRange(0, 2);
+		FName SectionName = FName();
+		switch (Selection) {
+		case 0:
+			SectionName = FName("Attack1");
+			break;
+		case 1:
+			SectionName = FName("Attack2");
+			break;
+		case 2:
+			SectionName = FName("Attack3");
+			break;
+		default:
+			break;
+		}
+
+		AnimInstnace->Montage_JumpToSection(SectionName, AttackAnimation);
 	}
 }
 
@@ -202,6 +230,7 @@ void AFEnemy::CheckCombatTarget() {
 			MoveToTarget(CombatTarget);
 		} else if (InTargetRange(CombatTarget, AttackRadius) && EnemyState != EEnemyState::EES_Attacking) {
 			EnemyState = EEnemyState::EES_Attacking;
+			Attack();
 		}
 	}
 }
