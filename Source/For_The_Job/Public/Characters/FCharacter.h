@@ -14,42 +14,6 @@ UCLASS()
 class FOR_THE_JOB_API AFCharacter : public ACharacter, public IFHitInterface {
 	GENERATED_BODY()
 
-private:
-	UPROPERTY(EditAnywhere, Category = Sounds)
-	USoundBase *HitSound;
-
-	UPROPERTY(EditAnywhere, Category = VisualEffects)
-	UParticleSystem *HitParticles;
-
-	UPROPERTY(EditAnywhere, Category = Combat)
-	TArray<FName> AttackMontageSections;
-
-	UPROPERTY(EditAnywhere, Category = Combat)
-	TArray<FName> DeathMontageSections;
-
-protected:
-	UPROPERTY(VisibleAnywhere, Category = Weapon)
-	AFWeapon *EquippedWeapon;
-
-	UPROPERTY(EditDefaultsOnly, Category = Montages)
-	UAnimMontage *AttackAnimation;
-
-	UPROPERTY(EditDefaultsOnly, Category = Montages)
-	UAnimMontage *HitReactMontage;
-
-	UPROPERTY(EditDefaultsOnly, Category = Montages)
-	UAnimMontage *DieMontage;
-
-	UPROPERTY(VisibleAnywhere)
-	UFAttributeComponent *Attributes;
-
-public:
-	UFUNCTION(BlueprintCallable)
-	void EnableBoxCollision();
-
-	UFUNCTION(BlueprintCallable)
-	void DisableBoxCollision();
-
 public:
 	AFCharacter();
 
@@ -62,31 +26,64 @@ protected:
 
 	virtual void Die();
 
-	virtual int32 PlayAttackAnimation();
-
-	virtual int32 PlayDeathMontage();
-
-	void PlayHitReactMontage(const FName &SelectionName);
-
 	void DirectionalHitReact(const FVector &ImpactPoint);
 
-	virtual bool CanAttack();
+	virtual void HandleDamage(float DamageAmount);
+
+	void PlayHitSound(const FVector &ImpactPoint);
+
+	void SpawnHitParticles(const FVector &ImpactPoint);
+
+	void DisableCapsule();
 
 	bool IsAlive();
 
 	UFUNCTION(BlueprintCallable)
 	virtual void AttackEnd();
 
-	void PlayHitSound(const FVector &ImpactPoint);
+	UFUNCTION(BlueprintCallable)
+	void EnableBoxCollision();
 
-	void SpawnHitParticles(const FVector &ImpactPoint);
+	UFUNCTION(BlueprintCallable)
+	void DisableBoxCollision();
 
-	virtual void HandleDamage(float DamageAmount);
+	void PlayHitReactMontage(const FName &SelectionName);
 
-	void DisableCapsule();
+	virtual int32 PlayAttackAnimation();
+
+	virtual int32 PlayDeathMontage();
+
+	virtual bool CanAttack();
+
+	UPROPERTY(VisibleAnywhere, Category = Weapon)
+	AFWeapon *EquippedWeapon;
+
+	UPROPERTY(VisibleAnywhere)
+	UFAttributeComponent *Attributes;
 
 private:
 	void PlayMontageSection(UAnimMontage *Montage, const FName &SectionName);
 
 	int32 PlayRandomMontageSection(UAnimMontage *Montage, const TArray<FName> &SectionNames);
+
+	UPROPERTY(EditAnywhere, Category = Sounds)
+	USoundBase *HitSound;
+
+	UPROPERTY(EditAnywhere, Category = VisualEffects)
+	UParticleSystem *HitParticles;
+
+	UPROPERTY(EditDefaultsOnly, Category = Montages)
+	UAnimMontage *AttackAnimation;
+
+	UPROPERTY(EditDefaultsOnly, Category = Montages)
+	UAnimMontage *HitReactMontage;
+
+	UPROPERTY(EditDefaultsOnly, Category = Montages)
+	UAnimMontage *DieMontage;
+
+	UPROPERTY(EditAnywhere, Category = Combat)
+	TArray<FName> AttackMontageSections;
+
+	UPROPERTY(EditAnywhere, Category = Combat)
+	TArray<FName> DeathMontageSections;
 };

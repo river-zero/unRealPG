@@ -25,7 +25,7 @@ enum class EViewMode : uint8 {
 UCLASS()
 class FOR_THE_JOB_API AFRPGCharacter : public AFCharacter {
 	GENERATED_BODY()
-	
+
 public:
 	AFRPGCharacter();
 
@@ -33,13 +33,9 @@ public:
 
 	virtual void SetupPlayerInputComponent(UInputComponent *PlayerInputComponent) override;
 
-	virtual void PossessedBy(AController* NewController) override;
+	virtual void PossessedBy(AController *NewController) override;
 
 	void SetViewMode(EViewMode InViewMode);
-
-	FORCEINLINE void SetOverlappingItem(AFItem *Item) { OverlappingItem = Item; }
-
-	FORCEINLINE ECharacterState GetCharacterState() const { return CharacterState; }
 
 	UFUNCTION()
 	void OnAttackMontageEnded(UAnimMontage *Montage, bool bInterrupted);
@@ -68,6 +64,8 @@ private:
 
 	virtual bool CanAttack() override;
 
+	void EquipWeapon(AFWeapon *Weapon);
+
 	UFUNCTION()
 	void CheckHit();
 
@@ -83,30 +81,31 @@ private:
 
 	bool CanArm();
 
-	UFUNCTION(BlueprintCallable)
 	void Disarm();
 
-	UFUNCTION(BlueprintCallable)
 	void Arm();
+
+	UFUNCTION(BlueprintCallable)
+	void AttackWeaponToBack();
+
+	UFUNCTION(BlueprintCallable)
+	void AttachWeaponToHand();
 
 	UFUNCTION(BlueprintCallable)
 	void FinishEquipping();
 
-protected:
 	UPROPERTY(VisibleAnywhere)
 	USpringArmComponent *CameraBoom;
 
 	UPROPERTY(VisibleAnywhere)
 	UCameraComponent *ViewCamera;
 
-private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = RPGCharacter, Meta = (AllowPrivateAccess = true))
 	TObjectPtr<UFInputConfigData> PlayerCharacterInputConfigData;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = RPGCharacter, Meta = (AllowPrivateAccess = true))
 	TObjectPtr<UInputMappingContext> PlayerCharacterInputMappingContext;
 
-	// 부드러운 시점 전환을 위한 변수들 - - - - - - - - - - - - - -
 	EViewMode CurrentViewMode = EViewMode::None;
 
 	FVector DirectionToMove = FVector::ZeroVector;
@@ -119,26 +118,21 @@ private:
 
 	float ArmRotationChangeSpeed = 10.f;
 
-	// 걷기/달리기 전환을 위한 변수들 - - - - - - - - - - - - - - - -
 	bool IsWalking = true;
 
 	float RunSpeed = 500.f;
 
 	float WalkSpeed = 300.f;
 
-	// 점프 시 빠른 착지를 위한 변수들 - - - - - - - - - - - - - - -  
 	float DefaultGravityScale = 1.f;
 
 	float GravityScaleOnJumpStart = 1.5f;
 
-	// 아이템 상호작용을 위한 변수들 - - - - - - -- - - - - - - - - -
 	UPROPERTY(VisibleInstanceOnly)
 	AFItem *OverlappingItem;
 
-	// 무기 소지에 따른 애니메이션 재생을 위한 변수들 - - - - - - - -
 	ECharacterState CharacterState = ECharacterState::ECS_Unequipped;
 
-	// 콤보 공격을 위한 변수들 - - - - - - - - - - - - - - - - - - - 
 	EActionState ActionState = EActionState::EAS_Unoccupied;
 
 	FString AttackAnimMontageSectionName = FString(TEXT("Attack"));
@@ -148,4 +142,9 @@ private:
 	int32 CurrentComboCount = 0;
 
 	bool bIsAttackKeyPressed = false;
+
+public:
+	FORCEINLINE void SetOverlappingItem(AFItem *Item) { OverlappingItem = Item; }
+
+	FORCEINLINE ECharacterState GetCharacterState() const { return CharacterState; }
 };

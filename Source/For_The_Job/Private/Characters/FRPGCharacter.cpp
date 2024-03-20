@@ -12,7 +12,6 @@
 #include "Items/Weapons/FWeapon.h"
 #include "Animations/FAnimInstance.h"
 #include "Kismet/KismetSystemLibrary.h"
-#include "Components/BoxComponent.h"
 
 AFRPGCharacter::AFRPGCharacter() {
 	PrimaryActorTick.bCanEverTick = true;
@@ -169,8 +168,8 @@ void AFRPGCharacter::BeginPlay() {
         AnimInstance->OnMontageEnded.AddDynamic(this, &ThisClass::OnAttackMontageEnded);
         AnimInstance->OnCheckHitDelegate.AddDynamic(this, &ThisClass::CheckHit);
         AnimInstance->OnAttackEndDelegate.AddDynamic(this, &ThisClass::CheckCanNextCombo);
-        AnimInstance->OnDisarmDelegate.AddDynamic(this, &ThisClass::Disarm);
-        AnimInstance->OnArmDelegate.AddDynamic(this, &ThisClass::Arm);
+        AnimInstance->OnDisarmDelegate.AddDynamic(this, &ThisClass::AttackWeaponToBack);
+        AnimInstance->OnArmDelegate.AddDynamic(this, &ThisClass::AttachWeaponToHand);
         AnimInstance->OnFinishEquippingDelegate.AddDynamic(this, &ThisClass::FinishEquipping);
         AnimInstance->OnEnableBoxCollisionDelegate.AddDynamic(this, &ThisClass::EnableBoxCollision);
         AnimInstance->OnDisbleBoxCollisionDelegate.AddDynamic(this, &ThisClass::DisableBoxCollision);
@@ -281,27 +280,14 @@ void AFRPGCharacter::StopJump() {
 }
 
 void AFRPGCharacter::EKeyPressed() {
-    UFAnimInstance *AnimInstance = Cast<UFAnimInstance>(GetMesh()->GetAnimInstance());
-    if (false == ::IsValid(AnimInstance)) {
-        return;
-    }
-    
     AFWeapon *OverlappingWeapon = Cast< AFWeapon>(OverlappingItem);
-
     if (OverlappingWeapon) {
-        OverlappingWeapon->Equip(GetMesh(), FName("RightHandSocket"), this, this);
-        CharacterState = ECharacterState::ECS_EquippedOneHandedWeapon;
-        OverlappingItem = nullptr;
-        EquippedWeapon = OverlappingWeapon;
+        EquipWeapon(OverlappingWeapon);
     } else {
         if (CanDisarm()) {
-            AnimInstance->PlayEquipMontage(FName("Unequip"));
-            CharacterState = ECharacterState::ECS_Unequipped;
-            ActionState = EActionState::EAS_EquippingWeapon;
+            Disarm();
         } else if (CanArm()) {
-            AnimInstance->PlayEquipMontage(FName("Equip"));
-            CharacterState = ECharacterState::ECS_EquippedOneHandedWeapon;
-            ActionState = EActionState::EAS_EquippingWeapon;
+            Arm();
         }
     }
 }
@@ -318,6 +304,13 @@ void AFRPGCharacter::Attack() {
 
 bool AFRPGCharacter::CanAttack() {
     return ActionState == EActionState::EAS_Unoccupied && CharacterState != ECharacterState::ECS_Unequipped;
+}
+
+void AFRPGCharacter::EquipWeapon(AFWeapon *Weapon) {
+    Weapon->Equip(GetMesh(), FName("RightHandSocket"), this, this);
+    CharacterState = ECharacterState::ECS_EquippedOneHandedWeapon;
+    OverlappingItem = nullptr;
+    EquippedWeapon = Weapon;
 }
 
 void AFRPGCharacter::CheckHit() {
@@ -378,12 +371,34 @@ bool AFRPGCharacter::CanArm() {
 }
 
 void AFRPGCharacter::Disarm() {
+    UFAnimInstance *AnimInstance = Cast<UFAnimInstance>(GetMesh()->GetAnimInstance());
+    if (false == ::IsValid(AnimInstance)) {
+        return;
+    }
+
+    AnimInstance->PlayEquipMontage(FName("Unequip"));
+    CharacterState = ECharacterState::ECS_Unequipped;
+    ActionState = EActionState::EAS_EquippingWeapon;
+}
+
+void AFRPGCharacter::Arm() {
+    UFAnimInstance *AnimInstance = Cast<UFAnimInstance>(GetMesh()->GetAnimInstance());
+    if (false == ::IsValid(AnimInstance)) {
+        return;
+    }
+
+    AnimInstance->PlayEquipMontage(FName("Equip"));
+    CharacterState = ECharacterState::ECS_EquippedOneHandedWeapon;
+    ActionState = EActionState::EAS_EquippingWeapon;
+}
+
+void AFRPGCharacter::AttackWeaponToBack() {
     if (EquippedWeapon) {
         EquippedWeapon->AttachMeshToSocket(GetMesh(), FName("SpineSocket"));
     }
 }
 
-void AFRPGCharacter::Arm() {
+void AFRPGCharacter::AttachWeaponToHand() {
     if (EquippedWeapon) {
         EquippedWeapon->AttachMeshToSocket(GetMesh(), FName("RightHandSocket"));
     }
