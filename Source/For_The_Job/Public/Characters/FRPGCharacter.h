@@ -40,6 +40,8 @@ public:
 	UFUNCTION()
 	void OnAttackMontageEnded(UAnimMontage *Montage, bool bInterrupted);
 
+	virtual void GetHit_Implementation(const FVector &ImpactPoint) override;
+
 protected:
 	virtual void BeginPlay() override;
 

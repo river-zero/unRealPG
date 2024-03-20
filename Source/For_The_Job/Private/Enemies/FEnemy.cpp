@@ -86,6 +86,7 @@ void AFEnemy::BeginPlay() {
 
 	if (PawnSensing) PawnSensing->OnSeePawn.AddDynamic(this, &AFEnemy::PawnSeen);
 	InitializeEnemy();
+	Tags.Add(FName("Enemy"));
 }
 
 void AFEnemy::SpawnDefaultWeapon() {

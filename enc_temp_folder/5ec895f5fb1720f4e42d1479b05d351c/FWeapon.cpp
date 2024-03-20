@@ -75,7 +75,6 @@ void AFWeapon::OnBoxOverlap(UPrimitiveComponent *OverlappedComponent, AActor *Ot
 
 	// 박스 충돌 시 데미지 적용, GetHit 호출, Field System 호출
 	if (BoxHit.GetActor()) {
-		// 적이 자신을 공격하지 않도록 함
 		if (ActorIsSameType(BoxHit.GetActor())) return;
 
 		UGameplayStatics::ApplyDamage(BoxHit.GetActor(), Damage, GetInstigator()->GetController(), this, UDamageType::StaticClass());

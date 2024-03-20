@@ -3,6 +3,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Components/StaticMeshComponent.h"
 #include "Components/InputComponent.h"
 #include "GameFramework/Controller.h"
 #include "EnhancedInputComponent.h"
@@ -18,12 +19,16 @@ AFRPGCharacter::AFRPGCharacter() {
 
     float CharacterHalfHeight = 90.f;
     float CharacterRadius = 35.f;
-
     GetCapsuleComponent()->InitCapsuleSize(CharacterRadius, CharacterHalfHeight);
-
     FVector PivotPosition(0.f, 0.f, -CharacterHalfHeight);
     FRotator PivotRotation(0.f, -90.f, 0.f);
     GetMesh()->SetRelativeLocationAndRotation(PivotPosition, PivotRotation);
+
+    GetMesh()->SetCollisionObjectType(ECollisionChannel::ECC_WorldDynamic);
+    GetMesh()->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
+    GetMesh()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Visibility, ECollisionResponse::ECR_Block);
+    GetMesh()->SetCollisionResponseToChannel(ECollisionChannel::ECC_WorldDynamic, ECollisionResponse::ECR_Overlap);
+    GetMesh()->SetGenerateOverlapEvents(true);
 
     CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
     CameraBoom->SetupAttachment(GetRootComponent());
@@ -148,6 +153,11 @@ void AFRPGCharacter::SetViewMode(EViewMode InViewMode) {
 void AFRPGCharacter::OnAttackMontageEnded(UAnimMontage *Montage, bool bInterrupted) {
     GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
     EActionState::EAS_Unoccupied;
+}
+
+void AFRPGCharacter::GetHit_Implementation(const FVector &ImpactPoint) {
+    PlayHitSound(ImpactPoint);
+    SpawnHitParticles(ImpactPoint);
 }
 
 void AFRPGCharacter::BeginPlay() {
