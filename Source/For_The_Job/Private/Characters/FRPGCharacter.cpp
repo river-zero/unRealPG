@@ -153,7 +153,7 @@ void AFRPGCharacter::OnAttackMontageEnded(UAnimMontage *Montage, bool bInterrupt
 void AFRPGCharacter::BeginPlay() {
 	Super::BeginPlay();
 
-    Tags.Add(FName("RPGCharacter"));
+    Tags.Add(FName("EngageableTarget"));
 
     APlayerController* PlayerController = Cast<APlayerController>(GetController());
     if (true == ::IsValid(PlayerController)) {
