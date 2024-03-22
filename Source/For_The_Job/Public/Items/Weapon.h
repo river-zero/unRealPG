@@ -1,33 +1,30 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Items/FItem.h"
-#include "FWeapon.generated.h"
+#include "Items/Item.h"
+#include "Weapon.generated.h"
 
 class USoundBase;
 class UBoxComponent;
 
 UCLASS()
-class FOR_THE_JOB_API AFWeapon : public AFItem {
+class FOR_THE_JOB_API AWeapon : public AItem {
 	GENERATED_BODY()
-
+	
 public:
-	TArray<AActor*> IgnoreActors;
-
-public:
-	AFWeapon();
+	AWeapon();
 
 	void Equip(USceneComponent *InParent, FName InSocketName, AActor *NewOwner, APawn *NewInstigator);
 
 	void DeactivateEmbers();
-
+	
 	void DisableSphereCollision();
-
+	
 	void PlayEquipSound();
-
+	
 	void AttachMeshToSocket(USceneComponent *InParent, const FName &InSocketName);
 
-	FORCEINLINE UBoxComponent *GetWeaponBox() const { return WeaponBox; }
+	TArray<AActor *> IgnoreActors;
 
 protected:
 	virtual void BeginPlay() override;
@@ -38,6 +35,9 @@ protected:
 	bool ActorIsSameType(AActor *OtherActor);
 
 	void ExecuteGetHit(FHitResult &BoxHit);
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void CreateFields(const FVector& FieldLocation);
 
 private:
 	void BoxTrace(FHitResult &BoxHit);
@@ -62,4 +62,7 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Weapon Properties")
 	float Damage = 20.f;
+
+public:
+	FORCEINLINE UBoxComponent *GetWeaponBox() const { return WeaponBox; }
 };
