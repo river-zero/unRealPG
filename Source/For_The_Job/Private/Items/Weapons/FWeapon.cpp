@@ -67,7 +67,7 @@ void AFWeapon::BeginPlay() {
 }
 
 void AFWeapon::OnBoxOverlap(UPrimitiveComponent *OverlappedComponent, AActor *OtherActor, UPrimitiveComponent *OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult &SweepResult) {
-	// 적끼리는 무시하도록 함
+	// 같은 액터끼리는 무시
 	if (ActorIsSameType(OtherActor)) return;
 
 	FHitResult BoxHit;
@@ -75,7 +75,7 @@ void AFWeapon::OnBoxOverlap(UPrimitiveComponent *OverlappedComponent, AActor *Ot
 
 	// 박스 충돌 시 데미지 적용, GetHit 호출, Field System 호출
 	if (BoxHit.GetActor()) {
-		// 적이 자신을 공격하지 않도록 함
+		// 자기 자신도 무시
 		if (ActorIsSameType(BoxHit.GetActor())) return;
 
 		UGameplayStatics::ApplyDamage(BoxHit.GetActor(), Damage, GetInstigator()->GetController(), this, UDamageType::StaticClass());
@@ -92,7 +92,7 @@ void AFWeapon::ExecuteGetHit(FHitResult &BoxHit) {
 	IFHitInterface *HitInterface = Cast<IFHitInterface>(BoxHit.GetActor());
 	if (HitInterface) {
 		// 블루프린트에서 C++ 코드로 구현된 함수를 호출하는 데 사용
-		HitInterface->Execute_GetHit(BoxHit.GetActor(), BoxHit.ImpactPoint);
+		HitInterface->Execute_GetHit(BoxHit.GetActor(), BoxHit.ImpactPoint, GetOwner());
 	}
 }
 

@@ -31,6 +31,8 @@ public:
 
 	virtual void Tick(float DeltaSeconds) override;
 
+	virtual void GetHit_Implementation(const FVector &ImpactPoint, AActor *Hitter) override;
+
 	virtual void SetupPlayerInputComponent(UInputComponent *PlayerInputComponent) override;
 
 	virtual void PossessedBy(AController *NewController) override;
@@ -40,12 +42,9 @@ public:
 	UFUNCTION()
 	void OnAttackMontageEnded(UAnimMontage *Montage, bool bInterrupted);
 
-	virtual void GetHit_Implementation(const FVector &ImpactPoint) override;
-
 protected:
 	virtual void BeginPlay() override;
 
-private:
 	void Move(const FInputActionValue& InValue);
 
 	void Look(const FInputActionValue& InValue);
@@ -96,6 +95,10 @@ private:
 	UFUNCTION(BlueprintCallable)
 	void FinishEquipping();
 
+	UFUNCTION(BlueprintCallable)
+	void HitReactEnd();
+
+private:
 	UPROPERTY(VisibleAnywhere)
 	USpringArmComponent *CameraBoom;
 

@@ -4,6 +4,8 @@
 #include "Components/FAttributeComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Components/CapsuleComponent.h"
+// #include "For_The_Job/DebugMacros.h"
+// #include "Kismet/KismetSystemLibrary.h"
 
 void AFCharacter::EnableBoxCollision() {
 	if (EquippedWeapon && EquippedWeapon->GetWeaponBox()) {
@@ -28,6 +30,19 @@ void AFCharacter::BeginPlay() {
 	Super::BeginPlay();
 }
 
+void AFCharacter::GetHit_Implementation(const FVector &ImpactPoint, AActor *Hitter) {
+	// DRAW_SPHERE_COLOR(ImpactPoint, FColor::Orange);
+
+	if (IsAlive() && Hitter) {
+		DirectionalHitReact(Hitter->GetActorLocation());
+	} else {
+		Die();
+	}
+
+	PlayHitSound(ImpactPoint);
+	SpawnHitParticles(ImpactPoint);
+}
+
 void AFCharacter::Attack() {
 }
 
@@ -40,6 +55,13 @@ int32 AFCharacter::PlayAttackAnimation() {
 
 int32 AFCharacter::PlayDeathMontage() {
 	return PlayRandomMontageSection(DieMontage, DeathMontageSections);
+}
+
+void AFCharacter::StopAttackMontage() {
+	UAnimInstance *AnimInstance = GetMesh()->GetAnimInstance();
+	if (AnimInstance) {
+		AnimInstance->Montage_Stop(0.25f, AttackAnimation);
+	}
 }
 
 void AFCharacter::PlayHitReactMontage(const FName &SelectionName) {

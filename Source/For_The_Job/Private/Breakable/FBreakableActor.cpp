@@ -26,7 +26,7 @@ void AFBreakableActor::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
 }
 
-void AFBreakableActor::GetHit_Implementation(const FVector &ImpactPoint) {
+void AFBreakableActor::GetHit_Implementation(const FVector &ImpactPoint, AActor *Hitter) {
 	// 무한 반복 오류 방지
 	if (bBroken) return;
 	bBroken = true;

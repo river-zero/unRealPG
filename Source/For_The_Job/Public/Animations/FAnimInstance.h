@@ -50,7 +50,6 @@ private:
 	UFUNCTION()
 	void AnimNotify_DisableBoxCollision();
 
-
 public:
 	UPROPERTY(BlueprintReadOnly)
 	class AFRPGCharacter *RPGCharacter;

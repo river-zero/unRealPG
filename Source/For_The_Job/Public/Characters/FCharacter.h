@@ -22,6 +22,8 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
+	virtual void GetHit_Implementation(const FVector &ImpactPoint, AActor *Hitter) override;
+
 	virtual void Attack();
 
 	virtual void Die();
@@ -52,6 +54,8 @@ protected:
 	virtual int32 PlayAttackAnimation();
 
 	virtual int32 PlayDeathMontage();
+
+	void StopAttackMontage();
 
 	virtual bool CanAttack();
 

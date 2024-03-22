@@ -8,7 +8,6 @@
 #include "Perception/PawnSensingComponent.h"
 #include "Items/Weapons/FWeapon.h"
 // #include "For_The_Job/DebugMacros.h"
-// #include "Kismet/KismetSystemLibrary.h"
 
 AFEnemy::AFEnemy() {
 	PrimaryActorTick.bCanEverTick = true;
@@ -51,26 +50,27 @@ void AFEnemy::Tick(float DeltaTime) {
 	}
 }
 
-void AFEnemy::GetHit_Implementation(const FVector &ImpactPoint) {
-	// DRAW_SPHERE_COLOR(ImpactPoint, FColor::Orange);
+void AFEnemy::GetHit_Implementation(const FVector &ImpactPoint, AActor *Hitter) {
+	Super::GetHit_Implementation(ImpactPoint, Hitter);
 
-	ShowHealthBar();
+	if (!IsDead()) ShowHealthBar();
+	ClearPatrolTimer();
+	ClearAttackTimer();
+	DisableBoxCollision();
 
-	// 체력이 있다면 공격받고, 없다면 죽음
-	if (IsAlive()) {
-		DirectionalHitReact(ImpactPoint);
-	} else {
-		Die();
-	}
-
-	PlayHitSound(ImpactPoint);
-	SpawnHitParticles(ImpactPoint);
+	StopAttackMontage();
 }
 
 float AFEnemy::TakeDamage(float DamageAmount, FDamageEvent const &DamageEvent, AController *EventInstigator, AActor *DamageCauser) {
 	HandleDamage(DamageAmount);
 	CombatTarget = EventInstigator->GetPawn();
-	ChaseTarget();
+
+	if (IsInsideAttackRadius()) {
+		EnemyState = EEnemyState::EES_Attacking;
+	} else if (IsOutsideAttackRadius()) {
+		ChaseTarget();
+	}
+
 	return DamageAmount;
 }
 
@@ -106,6 +106,7 @@ void AFEnemy::Die() {
 	DisableCapsule();
 	SetLifeSpan(DeathLifeSpan);
 	GetCharacterMovement()->bOrientRotationToMovement = false;
+	DisableBoxCollision();
 }
 
 void AFEnemy::Attack() {

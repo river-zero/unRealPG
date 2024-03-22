@@ -72,6 +72,13 @@ void AFRPGCharacter::Tick(float DeltaSeconds) {
     }
 }
 
+void AFRPGCharacter::GetHit_Implementation(const FVector &ImpactPoint, AActor *Hitter) {
+    Super::GetHit_Implementation(ImpactPoint, Hitter);
+
+    DisableBoxCollision();
+    ActionState = EActionState::EAS_HitReaction;
+}
+
 void AFRPGCharacter::SetupPlayerInputComponent(UInputComponent *PlayerInputComponent) {
     Super::SetupPlayerInputComponent(PlayerInputComponent);
 
@@ -153,11 +160,6 @@ void AFRPGCharacter::SetViewMode(EViewMode InViewMode) {
 void AFRPGCharacter::OnAttackMontageEnded(UAnimMontage *Montage, bool bInterrupted) {
     GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
     EActionState::EAS_Unoccupied;
-}
-
-void AFRPGCharacter::GetHit_Implementation(const FVector &ImpactPoint) {
-    PlayHitSound(ImpactPoint);
-    SpawnHitParticles(ImpactPoint);
 }
 
 void AFRPGCharacter::BeginPlay() {
@@ -415,5 +417,9 @@ void AFRPGCharacter::AttachWeaponToHand() {
 }
 
 void AFRPGCharacter::FinishEquipping() {
+    ActionState = EActionState::EAS_Unoccupied;
+}
+
+void AFRPGCharacter::HitReactEnd() {
     ActionState = EActionState::EAS_Unoccupied;
 }
