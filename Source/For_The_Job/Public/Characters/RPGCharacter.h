@@ -3,19 +3,19 @@
 #include "CoreMinimal.h"
 #include "Characters/BaseCharacter.h"
 #include "Characters/CharacterType.h"
-//#include "Interfaces/PickupInterface.h"
+#include "Interfaces/PickupInterface.h"
 #include "RPGCharacter.generated.h"
 
 class USpringArmComponent;
 class UCameraComponent;
 class AItem;
 //class ASoul;
-//class ATreasure;
+class ATreasure;
 class UAnimMontage;
 //class USlashOverlay;
 
 UCLASS()
-class FOR_THE_JOB_API ARPGCharacter : public ABaseCharacter {
+class FOR_THE_JOB_API ARPGCharacter : public ABaseCharacter, public IPickupInterface {
 	GENERATED_BODY()
 
 public:
@@ -33,12 +33,11 @@ public:
 
 	void WalkRun();
 
-	//virtual float TakeDamage(float DamageAmount, struct FDamageEvent const &DamageEvent, class AController *EventInstigator, AActor *DamageCauser) override;
+	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const &DamageEvent, class AController *EventInstigator, AActor *DamageCauser) override;
 	
-	//virtual void GetHit_Implementation(const FVector &ImpactPoint, AActor *Hitter) override;
+	virtual void GetHit_Implementation(const FVector &ImpactPoint, AActor *Hitter) override;
 	
-	void SetOverlappingItem(AItem *Item);
-	// virtual로 되어 있었음
+	virtual void SetOverlappingItem(AItem *Item) override;
 	
 	//virtual void AddSouls(ASoul *Soul) override;
 	
@@ -57,17 +56,17 @@ protected:
 
 	void EKeyPressed();
 
-	//virtual void Attack() override;
+	virtual void Attack() override;
 	
 	//void Dodge();
 
 	void EquipWeapon(AWeapon *Weapon);
 	
-	//virtual void AttackEnd() override;
+	virtual void AttackEnd() override;
 	
-	//virtual void DodgeEnd() override;
+	virtual void DodgeEnd() override;
 	
-	//virtual bool CanAttack() override;
+	virtual bool CanAttack() override;
 	
 	bool CanDisarm();
 	
@@ -83,22 +82,22 @@ protected:
 	
 	//bool HasEnoughStamina();
 	
-	//bool IsOccupied();
+	bool IsOccupied();
 
-	//UFUNCTION(BlueprintCallable)
-	//void AttachWeaponToBack();
+	UFUNCTION(BlueprintCallable)
+	void AttachWeaponToBack();
 
-	//UFUNCTION(BlueprintCallable)
-	//void AttachWeaponToHand();
+	UFUNCTION(BlueprintCallable)
+	void AttachWeaponToHand();
 
-	//UFUNCTION(BlueprintCallable)
-	//void FinishEquipping();
+	UFUNCTION(BlueprintCallable)
+	void FinishEquipping();
 
-	//UFUNCTION(BlueprintCallable)
-	//void HitReactEnd();
+	UFUNCTION(BlueprintCallable)
+	void HitReactEnd();
 
 private:
-	//bool IsUnoccupied();
+	bool IsUnoccupied();
 	
 	//void InitializeSlashOverlay();
 	

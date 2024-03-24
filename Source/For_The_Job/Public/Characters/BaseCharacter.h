@@ -2,7 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
-//#include "Interfaces/HitInterface.h"
+#include "Interfaces/HitInterface.h"
 #include "Characters/CharacterType.h"
 #include "BaseCharacter.generated.h"
 
@@ -11,8 +11,7 @@ class UAttributeComponent;
 class UAnimMontage;
 
 UCLASS()
-class FOR_THE_JOB_API ABaseCharacter : public ACharacter
-{
+class FOR_THE_JOB_API ABaseCharacter : public ACharacter, public IHitInterface {
 	GENERATED_BODY()
 
 public:
@@ -23,26 +22,44 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-	//virtual void GetHit_Implementation(const FVector &ImpactPoint, AActor *Hitter) override;
-	//virtual void Attack();
+	virtual void GetHit_Implementation(const FVector &ImpactPoint, AActor *Hitter) override;
+
+	virtual void Attack();
 
 	//UFUNCTION(BlueprintNativeEvent)
 	//void Die();
+	//
+	//->cpp ¿¡´Â 
+	/*void ABaseCharacter::Die_Implementation() {
+		Tags.Add(FName("Dead"));
+		PlayDeathMontage();
+	}*/
 
-	//void DirectionalHitReact(const FVector &ImpactPoint);
-	//virtual void HandleDamage(float DamageAmount);
-	//void PlayHitSound(const FVector &ImpactPoint);
-	//void SpawnHitParticles(const FVector &ImpactPoint);
-	//void DisableCapsule();
-	//virtual bool CanAttack();
-	//bool IsAlive();
-	//void DisableMeshCollision();
+	void DirectionalHitReact(const FVector &ImpactPoint);
+	
+	virtual void HandleDamage(float DamageAmount);
+	
+	void PlayHitSound(const FVector &ImpactPoint);
+	
+	void SpawnHitParticles(const FVector &ImpactPoint);
+	
+	void DisableCapsule();
+	
+	virtual bool CanAttack();
+	
+	bool IsAlive();
+	
+	void DisableMeshCollision();
 
-	//void PlayHitReactMontage(const FName &SectionName);
-	//virtual int32 PlayAttackMontage();
-	//virtual int32 PlayDeathMontage();
-	//virtual void PlayDodgeMontage();
-	//void StopAttackMontage();
+	void PlayHitReactMontage(const FName &SectionName);
+	
+	virtual int32 PlayAttackMontage();
+	
+	virtual int32 PlayDeathMontage();
+	
+	virtual void PlayDodgeMontage();
+	
+	void StopAttackMontage();
 
 	//UFUNCTION(BlueprintCallable)
 	//FVector GetTranslationWarpTarget();
@@ -50,20 +67,20 @@ protected:
 	//UFUNCTION(BlueprintCallable)
 	//FVector GetRotationWarpTarget();
 
-	//UFUNCTION(BlueprintCallable)
-	//virtual void AttackEnd();
+	UFUNCTION(BlueprintCallable)
+	virtual void AttackEnd();
 
-	//UFUNCTION(BlueprintCallable)
-	//virtual void DodgeEnd();
+	UFUNCTION(BlueprintCallable)
+	virtual void DodgeEnd();
 
-	//UFUNCTION(BlueprintCallable)
-	//void SetWeaponCollisionEnabled(ECollisionEnabled::Type CollisionEnabled);
+	UFUNCTION(BlueprintCallable)
+	void SetWeaponCollisionEnabled(ECollisionEnabled::Type CollisionEnabled);
 
 	UPROPERTY(VisibleAnywhere, Category = Weapon)
 	AWeapon *EquippedWeapon;
 
-	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = ""true""))
-	//UAttributeComponent *Attributes;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	UAttributeComponent *Attributes;
 
 	UPROPERTY(BlueprintReadOnly, Category = Combat)
 	AActor *CombatTarget;
@@ -75,9 +92,9 @@ protected:
 	TEnumAsByte<EDeathPose> DeathPose;
 
 private:
-	//void PlayMontageSection(UAnimMontage *Montage, const FName &SectionName);
+	void PlayMontageSection(UAnimMontage *Montage, const FName &SectionName);
 
-	//int32 PlayRandomMontageSection(UAnimMontage *Montage, const TArray<FName> &SectionNames);
+	int32 PlayRandomMontageSection(UAnimMontage *Montage, const TArray<FName> &SectionNames);
 
 	UPROPERTY(EditAnywhere, Category = Combat)
 	USoundBase *HitSound;

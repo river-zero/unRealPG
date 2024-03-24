@@ -19,5 +19,8 @@ void URPGAnimInstance::NativeUpdateAnimation(float DeltaTime) {
 		GroundSpeed = UKismetMathLibrary::VSizeXY(RPGCharacterMovement->Velocity);
 		IsFalling = RPGCharacterMovement->IsFalling();
 		bJumpInput = RPGCharacter->GetJumpInput();
+		CharacterState = RPGCharacter->GetCharacterState();
+		ActionState = RPGCharacter->GetActionState();
+		DeathPose = RPGCharacter->GetDeathPose();
 	}
 }

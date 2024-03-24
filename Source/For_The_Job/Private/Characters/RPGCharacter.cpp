@@ -4,14 +4,14 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/StaticMeshComponent.h"
-//#include "Components/AttributeComponent.h"
+#include "Components/AttributeComponent.h"
 #include "Items/Item.h"
 #include "Items/Weapon.h"
 #include "Animation/AnimMontage.h"
 //#include "HUD/SlashHUD.h"
 //#include "HUD/SlashOverlay.h"
 //#include "Items/Soul.h"
-//#include "Items/Treasure.h"
+#include "Items/Treasure.h"
 
 ARPGCharacter::ARPGCharacter() {
     PrimaryActorTick.bCanEverTick = true;
@@ -52,7 +52,6 @@ void ARPGCharacter::Tick(float DeltaTime) {
     Super::Tick(DeltaTime);
 
     /* 위에 Super::Tick(DeltaTime) 없이 아래만
-    
     if (Attributes && SlashOverlay) {
         Attributes->RegenStamina(DeltaTime);
         SlashOverlay->SetStaminaBarPercent(Attributes->GetStaminaPercent());
@@ -71,8 +70,8 @@ void ARPGCharacter::SetupPlayerInputComponent(UInputComponent *PlayerInputCompon
     PlayerInputComponent->BindAction(FName("Jump"), IE_Released, this, &ARPGCharacter::StopJump);
     PlayerInputComponent->BindAction(FName("WalkRun"), IE_Pressed, this, &ARPGCharacter::WalkRun);
     PlayerInputComponent->BindAction(FName("Equip"), IE_Pressed, this, &ARPGCharacter::EKeyPressed);
-    //PlayerInputComponent->BindAction(FName("Attack"), IE_Pressed, this, &ASlashCharacter::Attack);
-    //PlayerInputComponent->BindAction(FName("Dodge"), IE_Pressed, this, &ASlashCharacter::Dodge);
+    PlayerInputComponent->BindAction(FName("Attack"), IE_Pressed, this, &ARPGCharacter::Attack);
+    //PlayerInputComponent->BindAction(FName("Dodge"), IE_Pressed, this, &ARPGCharacter::Dodge);
 }
 
 void ARPGCharacter::Jump() {
@@ -80,13 +79,10 @@ void ARPGCharacter::Jump() {
 }
 
 void ARPGCharacter::StartJump() {
-    bJumpInput = true;
-    Jump();
-
-    /* 위 코드 없이 아래만
     if (IsUnoccupied()) {
-        Super::Jump();
-    }*/
+        bJumpInput = true;
+        Jump();
+    }
 }
 
 void ARPGCharacter::StopJump() {
@@ -148,11 +144,35 @@ void ARPGCharacter::EKeyPressed() {
     }
 }
 
+void ARPGCharacter::Attack() {
+    Super::Attack();
+
+    if (CanAttack()) {
+        PlayAttackMontage();
+        ActionState = EActionState::EAS_Attacking;
+    }
+}
+
 void ARPGCharacter::EquipWeapon(AWeapon *Weapon) {
     Weapon->Equip(GetMesh(), FName("RightHandSocket"), this, this);
     CharacterState = ECharacterState::ECS_EquippedOneHandedWeapon;
     OverlappingItem = nullptr;
     EquippedWeapon = Weapon;
+}
+
+void ARPGCharacter::AttackEnd() {
+    ActionState = EActionState::EAS_Unoccupied;
+}
+
+void ARPGCharacter::DodgeEnd() {
+    Super::DodgeEnd();
+
+    ActionState = EActionState::EAS_Unoccupied;
+}
+
+bool ARPGCharacter::CanAttack() {
+    return ActionState == EActionState::EAS_Unoccupied &&
+        CharacterState != ECharacterState::ECS_Unequipped;
 }
 
 bool ARPGCharacter::CanDisarm() {
@@ -186,6 +206,34 @@ void ARPGCharacter::PlayEquipMontage(const FName &SectionName) {
     }
 }
 
+bool ARPGCharacter::IsOccupied() {
+    return ActionState != EActionState::EAS_Unoccupied;
+}
+
+void ARPGCharacter::AttachWeaponToBack() {
+    if (EquippedWeapon) {
+        EquippedWeapon->AttachMeshToSocket(GetMesh(), FName("SpineSocket"));
+    }
+}
+
+void ARPGCharacter::AttachWeaponToHand() {
+    if (EquippedWeapon) {
+        EquippedWeapon->AttachMeshToSocket(GetMesh(), FName("RightHandSocket"));
+    }
+}
+
+void ARPGCharacter::FinishEquipping() {
+    ActionState = EActionState::EAS_Unoccupied;
+}
+
+void ARPGCharacter::HitReactEnd() {
+    ActionState = EActionState::EAS_Unoccupied;
+}
+
+bool ARPGCharacter::IsUnoccupied() {
+    return ActionState == EActionState::EAS_Unoccupied;
+}
+
 void ARPGCharacter::WalkRun() {
     bIsRunning = !bIsRunning;
 
@@ -193,6 +241,21 @@ void ARPGCharacter::WalkRun() {
         GetCharacterMovement()->MaxWalkSpeed = RunSpeed;
     } else {
         GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
+    }
+}
+
+float ARPGCharacter::TakeDamage(float DamageAmount, FDamageEvent const &DamageEvent, AController *EventInstigator, AActor *DamageCauser) {
+    HandleDamage(DamageAmount);
+    //SetHUDHealth();
+    return DamageAmount;
+}
+
+void ARPGCharacter::GetHit_Implementation(const FVector &ImpactPoint, AActor *Hitter) {
+    Super::GetHit_Implementation(ImpactPoint, Hitter);
+
+    SetWeaponCollisionEnabled(ECollisionEnabled::NoCollision);
+    if (Attributes && Attributes->GetHealthPercent() > 0.f) {
+        ActionState = EActionState::EAS_HitReaction;
     }
 }
 

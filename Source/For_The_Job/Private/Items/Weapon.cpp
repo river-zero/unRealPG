@@ -4,7 +4,7 @@
 #include "Components/SphereComponent.h"
 #include "Components/BoxComponent.h"
 #include "Kismet/KismetSystemLibrary.h"
-//#include "Interfaces/HitInterface.h"
+#include "Interfaces/HitInterface.h"
 #include "NiagaraComponent.h"
 
 AWeapon::AWeapon() {
@@ -84,10 +84,10 @@ bool AWeapon::ActorIsSameType(AActor *OtherActor) {
 }
 
 void AWeapon::ExecuteGetHit(FHitResult &BoxHit) {
-	/*IHitInterface *HitInterface = Cast<IHitInterface>(BoxHit.GetActor());
+	IHitInterface *HitInterface = Cast<IHitInterface>(BoxHit.GetActor());
 	if (HitInterface) {
 		HitInterface->Execute_GetHit(BoxHit.GetActor(), BoxHit.ImpactPoint, GetOwner());
-	}*/
+	}
 }
 
 void AWeapon::BoxTrace(FHitResult &BoxHit) {
