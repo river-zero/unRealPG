@@ -26,8 +26,8 @@ protected:
 
 	virtual void Attack();
 
-	//UFUNCTION(BlueprintNativeEvent)
-	//void Die();
+	/*UFUNCTION(BlueprintNativeEvent)
+	void Die();*/
 	//
 	//->cpp ¿¡´Â 
 	/*void ABaseCharacter::Die_Implementation() {

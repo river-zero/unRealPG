@@ -91,8 +91,8 @@ private:
 	UFUNCTION()
 	void PawnSeen(APawn *SeenPawn);
 
-//	UPROPERTY(VisibleAnywhere)
-//	UHealthBarComponent *HealthBarWidget;
+	UPROPERTY(VisibleAnywhere)
+	UHealthBarComponent *HealthBarWidget;
 
 	UPROPERTY(VisibleAnywhere)
 	UPawnSensingComponent *PawnSensing;
@@ -130,7 +130,7 @@ private:
 	float PatrolWaitMax = 10.f;
 
 	UPROPERTY(EditAnywhere, Category = Combat)
-	float PatrollingSpeed = 125.f;
+	float PatrollingSpeed = 120.f;
 
 	FTimerHandle AttackTimer;
 

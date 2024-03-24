@@ -5,15 +5,15 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Perception/PawnSensingComponent.h"
 #include "Components/AttributeComponent.h"
-//#include "HUD/HealthBarComponent.h"
+#include "HUD/HealthBarComponent.h"
 #include "Items/Weapon.h"
 //#include "Items/Soul.h"
 
 AEnemy::AEnemy() {
 	PrimaryActorTick.bCanEverTick = true;
 
-	float CharacterHalfHeight = 87.f;
-	float CharacterRadius = 22.f;
+	float CharacterHalfHeight = 90.f;
+	float CharacterRadius = 40.f;
 	GetCapsuleComponent()->InitCapsuleSize(CharacterRadius, CharacterHalfHeight);
 	FVector PivotPosition(0.f, 0.f, -CharacterHalfHeight);
 	FRotator PivotRotation(0.f, -90.f, 0.f);
@@ -24,8 +24,8 @@ AEnemy::AEnemy() {
 	GetMesh()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Camera, ECollisionResponse::ECR_Ignore);
 	GetMesh()->SetGenerateOverlapEvents(true);
 
-	/*HealthBarWidget = CreateDefaultSubobject<UHealthBarComponent>(TEXT("HealthBar"));
-	HealthBarWidget->SetupAttachment(GetRootComponent());*/
+	HealthBarWidget = CreateDefaultSubobject<UHealthBarComponent>(TEXT("HealthBar"));
+	HealthBarWidget->SetupAttachment(GetRootComponent());
 
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	bUseControllerRotationPitch = false;
@@ -116,9 +116,9 @@ void AEnemy::AttackEnd() {
 void AEnemy::HandleDamage(float DamageAmount) {
 	Super::HandleDamage(DamageAmount);
 
-	/*if (Attributes && HealthBarWidget) {
+	if (Attributes && HealthBarWidget) {
 		HealthBarWidget->SetHealthPercent(Attributes->GetHealthPercent());
-	}*/
+	}
 }
 
 void AEnemy::InitializeEnemy() {
@@ -154,15 +154,15 @@ void AEnemy::PatrolTimerFinished() {
 }
 
 void AEnemy::HideHealthBar() {
-	/*if (HealthBarWidget) {
+	if (HealthBarWidget) {
 		HealthBarWidget->SetVisibility(false);
-	}*/
+	}
 }
 
 void AEnemy::ShowHealthBar() {
-	/*if (HealthBarWidget) {
+	if (HealthBarWidget) {
 		HealthBarWidget->SetVisibility(true);
-	}*/
+	}
 }
 
 void AEnemy::LoseInterest() {

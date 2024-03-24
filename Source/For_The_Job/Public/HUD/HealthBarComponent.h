@@ -9,9 +9,9 @@ class FOR_THE_JOB_API UHealthBarComponent : public UWidgetComponent {
 	GENERATED_BODY()
 	
 public:
-	//void SetHealthPercent(float Percent);
+	void SetHealthPercent(float Percent);
 
 private:
-	//UPROPERTY()
-	//class UHealthBar *HealthBarWidget;
+	UPROPERTY()
+	class UHealthBar *HealthBarWidget;
 };

@@ -17,7 +17,7 @@ ARPGCharacter::ARPGCharacter() {
     PrimaryActorTick.bCanEverTick = true;
 
     float CharacterHalfHeight = 90.f;
-    float CharacterRadius = 30.f;
+    float CharacterRadius = 40.f;
     GetCapsuleComponent()->InitCapsuleSize(CharacterRadius, CharacterHalfHeight);
     FVector PivotPosition(0.f, 0.f, -CharacterHalfHeight);
     FRotator PivotRotation(0.f, -90.f, 0.f);
@@ -92,7 +92,7 @@ void ARPGCharacter::StopJump() {
 void ARPGCharacter::BeginPlay() {
     Super::BeginPlay();
 
-    //Tags.Add(FName("EngageableTarget"));
+    Tags.Add(FName("EngageableTarget"));
     //InitializeSlashOverlay();
 }
 
