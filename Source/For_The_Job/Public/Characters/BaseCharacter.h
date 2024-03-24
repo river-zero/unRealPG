@@ -61,11 +61,11 @@ protected:
 	
 	void StopAttackMontage();
 
-	//UFUNCTION(BlueprintCallable)
-	//FVector GetTranslationWarpTarget();
+	UFUNCTION(BlueprintCallable)
+	FVector GetTranslationWarpTarget();
 
-	//UFUNCTION(BlueprintCallable)
-	//FVector GetRotationWarpTarget();
+	UFUNCTION(BlueprintCallable)
+	FVector GetRotationWarpTarget();
 
 	UFUNCTION(BlueprintCallable)
 	virtual void AttackEnd();
