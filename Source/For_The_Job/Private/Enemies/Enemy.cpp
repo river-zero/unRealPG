@@ -99,7 +99,7 @@ void AEnemy::BeginPlay() {
 //	SetLifeSpan(DeathLifeSpan);
 //	GetCharacterMovement()->bOrientRotationToMovement = false;
 //	SetWeaponCollisionEnabled(ECollisionEnabled::NoCollision);
-//	//SpawnSoul();
+//	SpawnSoul();
 //}
 
 void AEnemy::SpawnSoul() {
