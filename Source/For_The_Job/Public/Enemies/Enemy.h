@@ -26,9 +26,9 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-//	virtual void Die_Implementation() override;
+    //virtual void Die_Implementation() override;
 
-//	void SpawnSoul();
+	void SpawnSoul();
 
 	virtual void Attack() override;
 
@@ -146,6 +146,6 @@ private:
 	UPROPERTY(EditAnywhere, Category = Combat)
 	float DeathLifeSpan = 8.f;
 
-//	UPROPERTY(EditAnywhere, Category = Combat)
-//	TSubclassOf<class ASoul> SoulClass;
+	UPROPERTY(EditAnywhere, Category = Combat)
+	TSubclassOf<class ASoul> SoulClass;
 };

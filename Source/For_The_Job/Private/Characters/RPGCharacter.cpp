@@ -10,7 +10,7 @@
 #include "Animation/AnimMontage.h"
 #include "HUD/RPGHUD.h"
 #include "HUD/RPGOverlay.h"
-//#include "Items/Soul.h"
+#include "Items/Soul.h"
 #include "Items/Treasure.h"
 
 ARPGCharacter::ARPGCharacter() {
@@ -203,6 +203,17 @@ void ARPGCharacter::PlayEquipMontage(const FName &SectionName) {
     }
 }
 
+//void ARPGCharacter::Die_Implementation() {
+//    Super::Die_Implementation();
+//
+//    ActionState = EActionState::EAS_Dead;
+//    DisableMeshCollision();
+//}
+
+bool ARPGCharacter::HasEnoughStamina() {
+    return Attributes && Attributes->GetStamina() > Attributes->GetDodgeCost();
+}
+
 bool ARPGCharacter::IsOccupied() {
     return ActionState != EActionState::EAS_Unoccupied;
 }
@@ -284,7 +295,7 @@ void ARPGCharacter::SetOverlappingItem(AItem *Item) {
 
 void ARPGCharacter::AddSouls(ASoul *Soul) {
     if (Attributes && RPGOverlay) {
-        //Attributes->AddSouls(Soul->GetSouls());
+        Attributes->AddSouls(Soul->GetSouls());
         RPGOverlay->SetSouls(Attributes->GetSouls());
     }
 }

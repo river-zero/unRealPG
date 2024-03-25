@@ -7,7 +7,7 @@
 #include "Components/AttributeComponent.h"
 #include "HUD/HealthBarComponent.h"
 #include "Items/Weapon.h"
-//#include "Items/Soul.h"
+#include "Items/Soul.h"
 
 AEnemy::AEnemy() {
 	PrimaryActorTick.bCanEverTick = true;
@@ -87,6 +87,31 @@ void AEnemy::BeginPlay() {
 	if (PawnSensing) PawnSensing->OnSeePawn.AddDynamic(this, &AEnemy::PawnSeen);
 	InitializeEnemy();
 	Tags.Add(FName("Enemy"));
+}
+
+//void AEnemy::Die_Implementation() {
+//	Super::Die_Implementation();
+//
+//	EnemyState = EEnemyState::EES_Dead;
+//	ClearAttackTimer();
+//	HideHealthBar();
+//	DisableCapsule();
+//	SetLifeSpan(DeathLifeSpan);
+//	GetCharacterMovement()->bOrientRotationToMovement = false;
+//	SetWeaponCollisionEnabled(ECollisionEnabled::NoCollision);
+//	//SpawnSoul();
+//}
+
+void AEnemy::SpawnSoul() {
+	UWorld *World = GetWorld();
+	if (World && SoulClass && Attributes) {
+		const FVector SpawnLocation = GetActorLocation() + FVector(0.f, 0.f, 125.f);
+		ASoul *SpawnedSoul = World->SpawnActor<ASoul>(SoulClass, SpawnLocation, GetActorRotation());
+		if (SpawnedSoul) {
+			SpawnedSoul->SetSouls(Attributes->GetSouls());
+			SpawnedSoul->SetOwner(this);
+		}
+	}
 }
 
 void AEnemy::Attack() {

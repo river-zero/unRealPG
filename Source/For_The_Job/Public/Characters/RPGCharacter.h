@@ -9,7 +9,7 @@
 class USpringArmComponent;
 class UCameraComponent;
 class AItem;
-//class ASoul;
+class ASoul;
 class ATreasure;
 class UAnimMontage;
 class URPGOverlay;
@@ -80,7 +80,7 @@ protected:
 	
 	//virtual void Die_Implementation() override;
 	
-	//bool HasEnoughStamina();
+	bool HasEnoughStamina();
 	
 	bool IsOccupied();
 
