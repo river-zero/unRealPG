@@ -58,7 +58,7 @@ protected:
 
 	virtual void Attack() override;
 	
-	//void Dodge();
+	void Dodge();
 
 	void EquipWeapon(AWeapon *Weapon);
 	

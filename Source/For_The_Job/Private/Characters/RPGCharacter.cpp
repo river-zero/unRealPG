@@ -68,7 +68,7 @@ void ARPGCharacter::SetupPlayerInputComponent(UInputComponent *PlayerInputCompon
     PlayerInputComponent->BindAction(FName("WalkRun"), IE_Pressed, this, &ARPGCharacter::WalkRun);
     PlayerInputComponent->BindAction(FName("Equip"), IE_Pressed, this, &ARPGCharacter::EKeyPressed);
     PlayerInputComponent->BindAction(FName("Attack"), IE_Pressed, this, &ARPGCharacter::Attack);
-    //PlayerInputComponent->BindAction(FName("Dodge"), IE_Pressed, this, &ARPGCharacter::Dodge);
+    PlayerInputComponent->BindAction(FName("Dodge"), IE_Pressed, this, &ARPGCharacter::Dodge);
 }
 
 void ARPGCharacter::Jump() {
@@ -147,6 +147,17 @@ void ARPGCharacter::Attack() {
     if (CanAttack()) {
         PlayAttackMontage();
         ActionState = EActionState::EAS_Attacking;
+    }
+}
+
+void ARPGCharacter::Dodge() {
+    if (IsOccupied() || !HasEnoughStamina()) return;
+
+    PlayDodgeMontage();
+    ActionState = EActionState::EAS_Dodge;
+    if (Attributes && RPGOverlay) {
+        Attributes->UseStamina(Attributes->GetDodgeCost());
+        RPGOverlay->SetStaminaBarPercent(Attributes->GetStaminaPercent());
     }
 }
 
