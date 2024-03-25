@@ -104,7 +104,7 @@ private:
 	double CombatRadius = 500.f;
 
 	UPROPERTY(EditAnywhere, Category = Combat)
-	double AttackRadius = 200.f;
+	double AttackRadius = 150.f;
 
 	UPROPERTY(EditAnywhere, Category = Combat)
 	double AcceptanceRadius = 50.f;

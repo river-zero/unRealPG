@@ -8,8 +8,8 @@
 #include "Items/Item.h"
 #include "Items/Weapon.h"
 #include "Animation/AnimMontage.h"
-//#include "HUD/SlashHUD.h"
-//#include "HUD/SlashOverlay.h"
+#include "HUD/RPGHUD.h"
+#include "HUD/RPGOverlay.h"
 //#include "Items/Soul.h"
 #include "Items/Treasure.h"
 
@@ -49,13 +49,10 @@ ARPGCharacter::ARPGCharacter() {
 }
 
 void ARPGCharacter::Tick(float DeltaTime) {
-    Super::Tick(DeltaTime);
-
-    /* 위에 Super::Tick(DeltaTime) 없이 아래만
-    if (Attributes && SlashOverlay) {
+    if (Attributes && RPGOverlay) {
         Attributes->RegenStamina(DeltaTime);
-        SlashOverlay->SetStaminaBarPercent(Attributes->GetStaminaPercent());
-    }*/
+        RPGOverlay->SetStaminaBarPercent(Attributes->GetStaminaPercent());
+    }
 }
 
 void ARPGCharacter::SetupPlayerInputComponent(UInputComponent *PlayerInputComponent) {
@@ -93,7 +90,7 @@ void ARPGCharacter::BeginPlay() {
     Super::BeginPlay();
 
     Tags.Add(FName("EngageableTarget"));
-    //InitializeSlashOverlay();
+    InitializeRPGOverlay();
 }
 
 void ARPGCharacter::MoveForward(float Value) {
@@ -234,6 +231,28 @@ bool ARPGCharacter::IsUnoccupied() {
     return ActionState == EActionState::EAS_Unoccupied;
 }
 
+void ARPGCharacter::InitializeRPGOverlay() {
+    APlayerController *PlayerController = Cast<APlayerController>(GetController());
+    if (PlayerController) {
+        ARPGHUD *RPGHUD = Cast<ARPGHUD>(PlayerController->GetHUD());
+        if (RPGHUD) {
+            RPGOverlay = RPGHUD->GetRPGOverlay();
+            if (RPGOverlay && Attributes) {
+                RPGOverlay->SetHealthBarPercent(Attributes->GetHealthPercent());
+                RPGOverlay->SetStaminaBarPercent(1.f);
+                RPGOverlay->SetGold(0);
+                RPGOverlay->SetSouls(0);
+            }
+        }
+    }
+}
+
+void ARPGCharacter::SetHUDHealth() {
+    if (RPGOverlay && Attributes) {
+        RPGOverlay->SetHealthBarPercent(Attributes->GetHealthPercent());
+    }
+}
+
 void ARPGCharacter::WalkRun() {
     bIsRunning = !bIsRunning;
 
@@ -246,7 +265,7 @@ void ARPGCharacter::WalkRun() {
 
 float ARPGCharacter::TakeDamage(float DamageAmount, FDamageEvent const &DamageEvent, AController *EventInstigator, AActor *DamageCauser) {
     HandleDamage(DamageAmount);
-    //SetHUDHealth();
+    SetHUDHealth();
     return DamageAmount;
 }
 
@@ -261,4 +280,18 @@ void ARPGCharacter::GetHit_Implementation(const FVector &ImpactPoint, AActor *Hi
 
 void ARPGCharacter::SetOverlappingItem(AItem *Item) {
     OverlappingItem = Item;
+}
+
+void ARPGCharacter::AddSouls(ASoul *Soul) {
+    if (Attributes && RPGOverlay) {
+        //Attributes->AddSouls(Soul->GetSouls());
+        RPGOverlay->SetSouls(Attributes->GetSouls());
+    }
+}
+
+void ARPGCharacter::AddGold(ATreasure *Treasure) {
+    if (Attributes && RPGOverlay) {
+        Attributes->AddGold(Treasure->GetGold());
+        RPGOverlay->SetGold(Attributes->GetGold());
+    }
 }

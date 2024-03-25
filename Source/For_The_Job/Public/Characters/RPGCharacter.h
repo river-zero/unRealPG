@@ -12,7 +12,7 @@ class AItem;
 //class ASoul;
 class ATreasure;
 class UAnimMontage;
-//class USlashOverlay;
+class URPGOverlay;
 
 UCLASS()
 class FOR_THE_JOB_API ARPGCharacter : public ABaseCharacter, public IPickupInterface {
@@ -39,9 +39,9 @@ public:
 	
 	virtual void SetOverlappingItem(AItem *Item) override;
 	
-	//virtual void AddSouls(ASoul *Soul) override;
+	virtual void AddSouls(ASoul *Soul) override;
 	
-	//virtual void AddGold(ATreasure *Treasure) override;
+	virtual void AddGold(ATreasure *Treasure) override;
 
 protected:
 	virtual void BeginPlay() override;
@@ -99,9 +99,9 @@ protected:
 private:
 	bool IsUnoccupied();
 	
-	//void InitializeSlashOverlay();
+	void InitializeRPGOverlay();
 	
-	//void SetHUDHealth();
+	void SetHUDHealth();
 
 	UPROPERTY(VisibleAnywhere)
 	USpringArmComponent *CameraBoom;
@@ -130,8 +130,8 @@ private:
 	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	EActionState ActionState = EActionState::EAS_Unoccupied;
 
-	//UPROPERTY()
-	//USlashOverlay *SlashOverlay;
+	UPROPERTY()
+	URPGOverlay *RPGOverlay;
 
 public:
 	FORCEINLINE bool GetJumpInput() const { return bJumpInput; }
