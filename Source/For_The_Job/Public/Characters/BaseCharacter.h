@@ -26,14 +26,8 @@ protected:
 
 	virtual void Attack();
 
-	/*UFUNCTION(BlueprintNativeEvent)
-	void Die();*/
-	//
-	//->cpp ¿¡´Â 
-	/*void ABaseCharacter::Die_Implementation() {
-		Tags.Add(FName("Dead"));
-		PlayDeathMontage();
-	}*/
+	UFUNCTION(BlueprintNativeEvent)
+	void Die();
 
 	void DirectionalHitReact(const FVector &ImpactPoint);
 	

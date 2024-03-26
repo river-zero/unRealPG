@@ -26,7 +26,7 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-    //virtual void Die_Implementation() override;
+    virtual void Die_Implementation() override;
 
 	void SpawnSoul();
 

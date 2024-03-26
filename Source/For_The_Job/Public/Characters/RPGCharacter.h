@@ -78,7 +78,7 @@ protected:
 	
 	void PlayEquipMontage(const FName &SectionName);
 	
-	//virtual void Die_Implementation() override;
+	virtual void Die_Implementation() override;
 	
 	bool HasEnoughStamina();
 	

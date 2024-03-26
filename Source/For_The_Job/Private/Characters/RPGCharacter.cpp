@@ -214,12 +214,12 @@ void ARPGCharacter::PlayEquipMontage(const FName &SectionName) {
     }
 }
 
-//void ARPGCharacter::Die_Implementation() {
-//    Super::Die_Implementation();
-//
-//    ActionState = EActionState::EAS_Dead;
-//    DisableMeshCollision();
-//}
+void ARPGCharacter::Die_Implementation() {
+    Super::Die_Implementation();
+
+    ActionState = EActionState::EAS_Dead;
+    DisableMeshCollision();
+}
 
 bool ARPGCharacter::HasEnoughStamina() {
     return Attributes && Attributes->GetStamina() > Attributes->GetDodgeCost();

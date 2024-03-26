@@ -89,18 +89,18 @@ void AEnemy::BeginPlay() {
 	Tags.Add(FName("Enemy"));
 }
 
-//void AEnemy::Die_Implementation() {
-//	Super::Die_Implementation();
-//
-//	EnemyState = EEnemyState::EES_Dead;
-//	ClearAttackTimer();
-//	HideHealthBar();
-//	DisableCapsule();
-//	SetLifeSpan(DeathLifeSpan);
-//	GetCharacterMovement()->bOrientRotationToMovement = false;
-//	SetWeaponCollisionEnabled(ECollisionEnabled::NoCollision);
-//	SpawnSoul();
-//}
+void AEnemy::Die_Implementation() {
+	Super::Die_Implementation();
+
+	EnemyState = EEnemyState::EES_Dead;
+	ClearAttackTimer();
+	HideHealthBar();
+	DisableCapsule();
+	SetLifeSpan(DeathLifeSpan);
+	GetCharacterMovement()->bOrientRotationToMovement = false;
+	SetWeaponCollisionEnabled(ECollisionEnabled::NoCollision);
+	SpawnSoul();
+}
 
 void AEnemy::SpawnSoul() {
 	UWorld *World = GetWorld();

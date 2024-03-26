@@ -23,10 +23,15 @@ void ABaseCharacter::BeginPlay() {
 void ABaseCharacter::GetHit_Implementation(const FVector &ImpactPoint, AActor *Hitter) {
 	if (IsAlive() && Hitter) {
 		DirectionalHitReact(Hitter->GetActorLocation());
-	} //else Die();
+	} else Die();
 
 	PlayHitSound(ImpactPoint);
 	SpawnHitParticles(ImpactPoint);
+}
+
+void ABaseCharacter::Die_Implementation() {
+	Tags.Add(FName("Dead"));
+	PlayDeathMontage();
 }
 
 void ABaseCharacter::Attack() {
