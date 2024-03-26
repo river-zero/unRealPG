@@ -14,6 +14,14 @@ class ATreasure;
 class UAnimMontage;
 class URPGOverlay;
 
+UENUM()
+enum class EViewMode : uint8 {
+	None,
+	BackView,
+	QuarterView,
+	End
+};
+
 UCLASS()
 class FOR_THE_JOB_API ARPGCharacter : public ABaseCharacter, public IPickupInterface {
 	GENERATED_BODY()
@@ -53,6 +61,10 @@ protected:
 	void Turn(float Value);
 	
 	void LookUp(float Value);
+
+	void ChangeView();
+
+	void SetViewMode(EViewMode InViewMode);
 
 	void EKeyPressed();
 
@@ -132,6 +144,18 @@ private:
 
 	UPROPERTY()
 	URPGOverlay *RPGOverlay;
+
+	EViewMode CurrentViewMode = EViewMode::None;
+
+	FVector DirectionToMove = FVector::ZeroVector;
+	
+	float DestArmLength = 0.f;
+	
+	float ArmLengthChangeSpeed = 3.f;
+	
+	FRotator DestArmRotation = FRotator::ZeroRotator;
+	
+	float ArmRotationChangeSpeed = 10.f;
 
 public:
 	FORCEINLINE bool GetJumpInput() const { return bJumpInput; }

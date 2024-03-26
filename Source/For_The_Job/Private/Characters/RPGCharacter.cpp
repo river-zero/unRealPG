@@ -23,13 +23,6 @@ ARPGCharacter::ARPGCharacter() {
     FRotator PivotRotation(0.f, -90.f, 0.f);
     GetMesh()->SetRelativeLocationAndRotation(PivotPosition, PivotRotation);
 
-    bUseControllerRotationPitch = false;
-    bUseControllerRotationYaw = false;
-    bUseControllerRotationRoll = false;
-
-    GetCharacterMovement()->bOrientRotationToMovement = true;
-    GetCharacterMovement()->RotationRate = FRotator(0.f, 400.f, 0.f);
-
     GetMesh()->SetCollisionObjectType(ECollisionChannel::ECC_WorldDynamic);
     GetMesh()->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
     GetMesh()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Visibility, ECollisionResponse::ECR_Block);
@@ -49,9 +42,35 @@ ARPGCharacter::ARPGCharacter() {
 }
 
 void ARPGCharacter::Tick(float DeltaTime) {
+    Super::Tick(DeltaTime);
+
     if (Attributes && RPGOverlay) {
         Attributes->RegenStamina(DeltaTime);
         RPGOverlay->SetStaminaBarPercent(Attributes->GetStaminaPercent());
+    }
+
+    switch (CurrentViewMode) {
+    case EViewMode::BackView:
+        break;
+    case EViewMode::QuarterView:
+    {
+        if (KINDA_SMALL_NUMBER < DirectionToMove.SizeSquared()) {
+            GetController()->SetControlRotation(FRotationMatrix::MakeFromX(DirectionToMove).Rotator());
+            AddMovementInput(DirectionToMove);
+            DirectionToMove = FVector::ZeroVector;
+        }
+
+        break;
+    }
+    case EViewMode::End:
+        break;
+    default:
+        break;
+    }
+
+    if (KINDA_SMALL_NUMBER < abs(DestArmLength - CameraBoom->TargetArmLength)) {
+        CameraBoom->TargetArmLength = FMath::FInterpTo(CameraBoom->TargetArmLength, DestArmLength, DeltaTime, ArmLengthChangeSpeed);
+        CameraBoom->SetRelativeRotation(FMath::RInterpTo(CameraBoom->GetRelativeRotation(), DestArmRotation, DeltaTime, ArmRotationChangeSpeed));
     }
 }
 
@@ -69,6 +88,8 @@ void ARPGCharacter::SetupPlayerInputComponent(UInputComponent *PlayerInputCompon
     PlayerInputComponent->BindAction(FName("Equip"), IE_Pressed, this, &ARPGCharacter::EKeyPressed);
     PlayerInputComponent->BindAction(FName("Attack"), IE_Pressed, this, &ARPGCharacter::Attack);
     PlayerInputComponent->BindAction(FName("Dodge"), IE_Pressed, this, &ARPGCharacter::Dodge);
+
+    PlayerInputComponent->BindAction(FName("ChangeView"), IE_Pressed, this, &ARPGCharacter::ChangeView);
 }
 
 void ARPGCharacter::Jump() {
@@ -91,17 +112,38 @@ void ARPGCharacter::BeginPlay() {
 
     Tags.Add(FName("EngageableTarget"));
     InitializeRPGOverlay();
+
+    SetViewMode(EViewMode::BackView);
+    DestArmLength = 400.f;
+    DestArmRotation = FRotator::ZeroRotator;
 }
 
 void ARPGCharacter::MoveForward(float Value) {
     if (ActionState != EActionState::EAS_Unoccupied) return;
 
     if (Controller && (Value != 0.f)) {
-        const FRotator ControlRotation = GetControlRotation();
-        const FRotator YawRotation(0.f, ControlRotation.Yaw, 0.f);
+        switch (CurrentViewMode) {
+        case EViewMode::None:
+            break;
+        case EViewMode::BackView:
+        {
+            const FRotator ControlRotation = GetController()->GetControlRotation();
+            const FRotator ControlRotationYaw(0.f, ControlRotation.Yaw, 0.f);
 
-        const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
-        AddMovementInput(Direction, Value);
+            const FVector ForwardVector = FRotationMatrix(ControlRotationYaw).GetUnitAxis(EAxis::X);
+            AddMovementInput(ForwardVector, Value);
+
+            break;
+        }
+        case EViewMode::QuarterView:
+            DirectionToMove.X = Value;
+            break;
+        case EViewMode::End:
+            break;
+        default:
+            AddMovementInput(GetActorForwardVector(), Value);
+            break;
+        }
     }
 }
 
@@ -109,20 +151,129 @@ void ARPGCharacter::MoveRight(float Value) {
     if (ActionState != EActionState::EAS_Unoccupied) return;
 
     if (Controller && (Value != 0.f)) {
-        const FRotator ControlRotation = GetControlRotation();
-        const FRotator YawRotation(0.f, ControlRotation.Yaw, 0.f);
+        switch (CurrentViewMode) {
+        case EViewMode::None:
+            break;
+        case EViewMode::BackView:
+        {
+            const FRotator ControlRotation = GetController()->GetControlRotation();
+            const FRotator ControlRotationYaw(0.f, ControlRotation.Yaw, 0.f);
 
-        const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
-        AddMovementInput(Direction, Value);
+            const FVector RightVector = FRotationMatrix(ControlRotationYaw).GetUnitAxis(EAxis::Y);
+            AddMovementInput(RightVector, Value);
+
+            break;
+        }
+        case EViewMode::QuarterView:
+            DirectionToMove.Y = Value;
+            break;
+        case EViewMode::End:
+            break;
+        default:
+            AddMovementInput(GetActorRightVector(), Value);
+            break;
+        }
     }
 }
 
 void ARPGCharacter::Turn(float Value) {
-    AddControllerYawInput(Value);
+    switch (CurrentViewMode) {
+    case EViewMode::None:
+        break;
+    case EViewMode::BackView:
+        AddControllerYawInput(Value);
+        break;
+    case EViewMode::QuarterView:
+        break;
+    case EViewMode::End:
+        break;
+    default:
+        break;
+    }
 }
 
 void ARPGCharacter::LookUp(float Value) {
-    AddControllerPitchInput(Value);
+    switch (CurrentViewMode) {
+    case EViewMode::None:
+        break;
+    case EViewMode::BackView:
+        AddControllerPitchInput(Value);
+        break;
+    case EViewMode::QuarterView:
+        break;
+    case EViewMode::End:
+        break;
+    default:
+        break;
+    }
+}
+
+void ARPGCharacter::ChangeView() {
+    switch (CurrentViewMode) {
+    case EViewMode::BackView:
+        GetController()->SetControlRotation(GetActorRotation());
+        DestArmLength = 900.f;
+        DestArmRotation = FRotator(-45.f, 0.f, 0.f);
+        SetViewMode(EViewMode::QuarterView);
+        break;
+    case EViewMode::QuarterView:
+        GetController()->SetControlRotation(FRotator::ZeroRotator);
+        DestArmLength = 400.f;
+        DestArmRotation = FRotator::ZeroRotator;
+        SetViewMode(EViewMode::BackView);
+        break;
+    case EViewMode::End:
+        break;
+    default:
+        break;
+    }
+}
+
+void ARPGCharacter::SetViewMode(EViewMode InViewMode) {
+    if (CurrentViewMode == InViewMode) {
+        return;
+    }
+
+    CurrentViewMode = InViewMode;
+
+    switch (CurrentViewMode) {
+    case EViewMode::BackView:
+        bUseControllerRotationPitch = false;
+        bUseControllerRotationYaw = false;
+        bUseControllerRotationRoll = false;
+
+        CameraBoom->bUsePawnControlRotation = true;
+        CameraBoom->bDoCollisionTest = true;
+        CameraBoom->bInheritPitch = true;
+        CameraBoom->bInheritYaw = true;
+        CameraBoom->bInheritRoll = false;
+
+        GetCharacterMovement()->bOrientRotationToMovement = true;
+        GetCharacterMovement()->bUseControllerDesiredRotation = false;
+        GetCharacterMovement()->RotationRate = FRotator(0.f, 480.f, 0.f);
+
+        break;
+    case EViewMode::QuarterView:
+        bUseControllerRotationPitch = false;
+        bUseControllerRotationYaw = false;
+        bUseControllerRotationRoll = false;
+
+        CameraBoom->bUsePawnControlRotation = false;
+        CameraBoom->bDoCollisionTest = false;
+        CameraBoom->bInheritPitch = false;
+        CameraBoom->bInheritYaw = false;
+        CameraBoom->bInheritRoll = false;
+
+        GetCharacterMovement()->bOrientRotationToMovement = false;
+        GetCharacterMovement()->bUseControllerDesiredRotation = true;
+        GetCharacterMovement()->RotationRate = FRotator(0.f, 480.f, 0.f);
+
+        break;
+    case EViewMode::End:
+        break;
+    default:
+        break;
+    }
 }
 
 void ARPGCharacter::EKeyPressed() {
