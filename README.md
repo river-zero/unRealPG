@@ -38,10 +38,10 @@ https://github.com/river-zero/unRealPG/assets/124229424/21bb3c5b-a1c2-455c-9a33-
 # 주요 기능
 ## 플레이어
 ### 이동
-![](README\8.png)
-![](README\9.png)
-![](README\10.png)
-![](README\11.png)
+![](/README/8.png)
+![](/README/9.png)
+![](/README/10.png)
+![](/README/11.png)
 
 ```
 void ARPGCharacter::MoveForward(float Value) {
@@ -136,7 +136,7 @@ void ARPGCharacter::LookUp(float Value) {
 ```
 
 ### 걷기/달리기
-![](README\12.png)
+![](/README/12.png)
 
 ```
 void ARPGCharacter::WalkRun() {
@@ -151,16 +151,16 @@ void ARPGCharacter::WalkRun() {
 ```
 
 ### Inverse Kinematics를 이용한 발 위치 조정
-![](README\1.png)
-![](README\2.png)
-![](README\3.png)
-![](README\4.png)
-![](README\5.png)
-![](README\6.png)
-![](README\7.png)
+![](/README/1.png)
+![](/README/2.png)
+![](/README/3.png)
+![](/README/4.png)
+![](/README/5.png)
+![](/README/6.png)
+![](/README/7.png)
 
 ### 점프
-![](README\13.png)
+![](/README/13.png)
 
 ```
 void ARPGCharacter::Jump() {
@@ -310,7 +310,7 @@ void ARPGCharacter::Dodge() {
 ```
 
 ### 죽음
-![](README\14.png)
+![](/README/14.png)
 
 ```
 void ARPGCharacter::Die_Implementation() {
