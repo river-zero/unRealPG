@@ -33,6 +33,7 @@
 해당 프로젝트는 Unreal Engine 5.1 버전을 사용해 구현한 오픈 월드 방식의 액션 RPG 게임입니다.
 
 # 플레이 영상
+https://github.com/river-zero/unRealPG/assets/124229424/21bb3c5b-a1c2-455c-9a33-5e78b83c2c4b
 
 # 주요 기능
 ## 플레이어
