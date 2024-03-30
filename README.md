@@ -1,9 +1,15 @@
 # unRealRPG
 해당 프로젝트는 Unreal Engine 5.1 버전을 사용해 구현한 오픈 월드 방식의 액션 RPG 게임입니다.
 
+# 플레이 영상
+
 # 주요 기능
 ## 플레이어
 ### 이동
+![](README\8.png)
+![](README\9.png)
+![](README\10.png)
+![](README\11.png)
 
 ```
 void ARPGCharacter::MoveForward(float Value) {
@@ -98,16 +104,190 @@ void ARPGCharacter::LookUp(float Value) {
 ```
 
 ### 걷기/달리기
+![](README\12.png)
+
+```
+void ARPGCharacter::WalkRun() {
+    bIsRunning = !bIsRunning;
+
+    if (bIsRunning) {
+        GetCharacterMovement()->MaxWalkSpeed = RunSpeed;
+    } else {
+        GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
+    }
+}
+```
+
 ### Inverse Kinematics를 이용한 발 위치 조정
+![](README\1.png)
+![](README\2.png)
+![](README\3.png)
+![](README\4.png)
+![](README\5.png)
+![](README\6.png)
+![](README\7.png)
+
 ### 점프
+![](README\13.png)
+
+```
+void ARPGCharacter::Jump() {
+    Super::Jump();
+}
+
+void ARPGCharacter::StartJump() {
+    if (IsUnoccupied()) {
+        bJumpInput = true;
+        Jump();
+    }
+}
+
+void ARPGCharacter::StopJump() {
+    bJumpInput = false;
+}
+```
+
 ### 시점 변화 (백뷰, 쿼터뷰)
+```
+void ARPGCharacter::ChangeView() {
+    switch (CurrentViewMode) {
+    case EViewMode::BackView:
+        GetController()->SetControlRotation(GetActorRotation());
+        DestArmLength = 900.f;
+        DestArmRotation = FRotator(-45.f, 0.f, 0.f);
+        SetViewMode(EViewMode::QuarterView);
+        break;
+    case EViewMode::QuarterView:
+        GetController()->SetControlRotation(FRotator::ZeroRotator);
+        DestArmLength = 400.f;
+        DestArmRotation = FRotator::ZeroRotator;
+        SetViewMode(EViewMode::BackView);
+        break;
+    case EViewMode::End:
+        break;
+    default:
+        break;
+    }
+}
+
+void ARPGCharacter::SetViewMode(EViewMode InViewMode) {
+    if (CurrentViewMode == InViewMode) {
+        return;
+    }
+
+    CurrentViewMode = InViewMode;
+
+    switch (CurrentViewMode) {
+    case EViewMode::BackView:
+        bUseControllerRotationPitch = false;
+        bUseControllerRotationYaw = false;
+        bUseControllerRotationRoll = false;
+
+        CameraBoom->bUsePawnControlRotation = true;
+        CameraBoom->bDoCollisionTest = true;
+        CameraBoom->bInheritPitch = true;
+        CameraBoom->bInheritYaw = true;
+        CameraBoom->bInheritRoll = false;
+
+        GetCharacterMovement()->bOrientRotationToMovement = true;
+        GetCharacterMovement()->bUseControllerDesiredRotation = false;
+        GetCharacterMovement()->RotationRate = FRotator(0.f, 480.f, 0.f);
+
+        break;
+    case EViewMode::QuarterView:
+        bUseControllerRotationPitch = false;
+        bUseControllerRotationYaw = false;
+        bUseControllerRotationRoll = false;
+
+        CameraBoom->bUsePawnControlRotation = false;
+        CameraBoom->bDoCollisionTest = false;
+        CameraBoom->bInheritPitch = false;
+        CameraBoom->bInheritYaw = false;
+        CameraBoom->bInheritRoll = false;
+
+        GetCharacterMovement()->bOrientRotationToMovement = false;
+        GetCharacterMovement()->bUseControllerDesiredRotation = true;
+        GetCharacterMovement()->RotationRate = FRotator(0.f, 480.f, 0.f);
+
+        break;
+    case EViewMode::End:
+        break;
+    default:
+        break;
+    }
+}
+```
 
 ## 전투
 ### 무장/비무장 상태 전환
+```
+void ARPGCharacter::EKeyPressed() {
+    AWeapon *OverlappingWeapon = Cast<AWeapon>(OverlappingItem);
+    if (OverlappingWeapon) {
+        if (EquippedWeapon) {
+            EquippedWeapon->Destroy();
+        }
+        EquipWeapon(OverlappingWeapon);
+    } else {
+        if (CanDisarm()) {
+            Disarm();
+        } else if (CanArm()) {
+            Arm();
+        }
+    }
+}
+
+void ARPGCharacter::Disarm() {
+    PlayEquipMontage(FName("Unequip"));
+    CharacterState = ECharacterState::ECS_Unequipped;
+    ActionState = EActionState::EAS_EquippingWeapon;
+}
+
+void ARPGCharacter::Arm() {
+    PlayEquipMontage(FName("Equip"));
+    CharacterState = ECharacterState::ECS_EquippedOneHandedWeapon;
+    ActionState = EActionState::EAS_EquippingWeapon;
+}
+```
+
 ### 공격
+```
+void ARPGCharacter::Attack() {
+    Super::Attack();
+
+    if (CanAttack()) {
+        PlayAttackMontage();
+        ActionState = EActionState::EAS_Attacking;
+    }
+}
+```
 ### 방향에 따른 공격 반응 (히트 리액션)
+
 ### 회피
+```
+void ARPGCharacter::Dodge() {
+    if (IsOccupied() || !HasEnoughStamina()) return;
+
+    PlayDodgeMontage();
+    ActionState = EActionState::EAS_Dodge;
+    if (Attributes && RPGOverlay) {
+        Attributes->UseStamina(Attributes->GetDodgeCost());
+        RPGOverlay->SetStaminaBarPercent(Attributes->GetStaminaPercent());
+    }
+}
+```
+
 ### 죽음
+![](README\14.png)
+
+```
+void ARPGCharacter::Die_Implementation() {
+    Super::Die_Implementation();
+
+    ActionState = EActionState::EAS_Dead;
+    DisableMeshCollision();
+}
+```
 
 ## 아이템
 ### 부서지는 오브젝트 (항아리)
