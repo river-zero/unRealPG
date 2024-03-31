@@ -38,6 +38,8 @@ https://github.com/river-zero/unRealPG/assets/124229424/21bb3c5b-a1c2-455c-9a33-
 # 주요 기능
 ## 플레이어
 ### 이동
+![](/README/move.gif)
+
 ![](/README/8.png)
 ![](/README/9.png)
 ![](/README/10.png)
@@ -136,6 +138,8 @@ void ARPGCharacter::LookUp(float Value) {
 ```
 
 ### 걷기/달리기
+![](/README/walkrun.gif)
+
 ![](/README/12.png)
 
 ```
@@ -151,6 +155,8 @@ void ARPGCharacter::WalkRun() {
 ```
 
 ### Inverse Kinematics를 이용한 발 위치 조정
+![](/README/inversekinematics.gif)
+
 ![](/README/1.png)
 ![](/README/2.png)
 ![](/README/3.png)
@@ -160,6 +166,8 @@ void ARPGCharacter::WalkRun() {
 ![](/README/7.png)
 
 ### 점프
+![](/README/jump.gif)
+
 ![](/README/13.png)
 
 ```
@@ -180,6 +188,8 @@ void ARPGCharacter::StopJump() {
 ```
 
 ### 시점 변화 (백뷰, 쿼터뷰)
+![](/README/changeview.gif)
+
 ```
 void ARPGCharacter::ChangeView() {
     switch (CurrentViewMode) {
@@ -252,6 +262,8 @@ void ARPGCharacter::SetViewMode(EViewMode InViewMode) {
 
 ## 전투
 ### 무장/비무장 상태 전환
+![](/README/armunarm.gif)
+
 ```
 void ARPGCharacter::EKeyPressed() {
     AWeapon *OverlappingWeapon = Cast<AWeapon>(OverlappingItem);
@@ -283,6 +295,8 @@ void ARPGCharacter::Arm() {
 ```
 
 ### 공격
+![](/README/attack.gif)
+
 ```
 void ARPGCharacter::Attack() {
     Super::Attack();
@@ -294,8 +308,11 @@ void ARPGCharacter::Attack() {
 }
 ```
 ### 방향에 따른 공격 반응 (히트 리액션)
+![](/README/hitreact.gif)
 
 ### 회피
+![](/README/dodge.gif)
+
 ```
 void ARPGCharacter::Dodge() {
     if (IsOccupied() || !HasEnoughStamina()) return;
@@ -310,6 +327,8 @@ void ARPGCharacter::Dodge() {
 ```
 
 ### 죽음
+![](/README/death.gif)
+
 ![](/README/14.png)
 
 ```
@@ -323,14 +342,25 @@ void ARPGCharacter::Die_Implementation() {
 
 ## 아이템
 ### 부서지는 오브젝트 (항아리)
+![](/README/breakable.gif)
+
 ### 무기
+
 ### 보물 (금화)
+![](/README/treasure.gif)
+
 ### 소울
+![](/README/soul.gif)
 
 ## 적
 ### 순찰
+![](/README/patrol.gif)
+
 ### 플레이어 감지 및 추적
+![](/README/chase.gif)
+
 ### 모션 워핑을 이용한 공격
+![](/README/motionwarpoing.gif)
 
 ## 화면
 ### 체력바
