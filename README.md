@@ -38,9 +38,13 @@ https://github.com/river-zero/unRealPG/assets/124229424/21bb3c5b-a1c2-455c-9a33-
 # 주요 기능
 ## 플레이어
 ### 이동
+<<<<<<< HEAD
 ![](/README/move.gif)
 
 ![](/README/8.png)
+=======
+![](README/8.png)
+>>>>>>> 0219951bd61322d4a22d318ed766e0389de01992
 ![](/README/9.png)
 ![](/README/10.png)
 ![](/README/11.png)
