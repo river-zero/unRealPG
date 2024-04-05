@@ -1,0 +1,249 @@
+@startuml
+
+skinparam classAttributeIconSize 0
+
+class Character {
+    +Tick(float DeltaTime)
+    +SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+    +GetCapsuleComponent(): UCapsuleComponent*
+    +GetMesh(): USkeletalMeshComponent*
+    +GetCharacterMovement(): UCharacterMovementComponent*
+}
+
+class BaseCharacter {
+    +Tick(float DeltaTime)
+    +GetHit_Implementation(const FVector& ImpactPoint, AActor* Hitter)
+    +Attack()
+    +Die()
+    +PlayAttackMontage(): int32
+    +PlayDeathMontage(): int32
+    +PlayDodgeMontage()
+    +GetTranslationWarpTarget(): FVector
+    +GetRotationWarpTarget(): FVector
+    +AttackEnd()
+    +DodgeEnd()
+    +SetWeaponCollisionEnabled(ECollisionEnabled::Type CollisionEnabled)
+    +EquippedWeapon: AWeapon*
+    +Attributes: UAttributeComponent*
+    +CombatTarget: AActor*
+    +DeathPose: TEnumAsByte<EDeathPose>
+}
+
+class RPGCharacter {
+    +Tick(float DeltaTime)
+    +SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+    +Jump()
+    +StartJump()
+    +StopJump()
+    +WalkRun()
+    +ChangeView()
+    +SetViewMode(EViewMode InViewMode)
+    +EKeyPressed()
+    +Attack()
+    +Dodge()
+    +EquipWeapon(AWeapon* Weapon)
+    +AttackEnd()
+    +DodgeEnd()
+    +Die_Implementation()
+    +AttachWeaponToBack()
+    +AttachWeaponToHand()
+    +FinishEquipping()
+    +HitReactEnd()
+    +SetOverlappingItem(AItem* Item)
+    +AddSouls(ASoul* Soul)
+    +AddGold(ATreasure* Treasure)
+    +GetCharacterState(): ECharacterState
+    +GetActionState(): EActionState
+    +CameraBoom: USpringArmComponent*
+    +ViewCamera: UCameraComponent*
+    +OverlappingItem: AItem*
+    +CharacterState: ECharacterState
+    +ActionState: EActionState
+    +RPGOverlay: URPGOverlay*
+    +DirectionToMove: FVector
+}
+
+class Enemy {
+    +Tick(float DeltaTime)
+    +TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+    +Destroyed()
+    +GetHit_Implementation(const FVector& ImpactPoint, AActor* Hitter)
+    +Die_Implementation()
+    +Attack()
+    +AttackEnd()
+    +PawnSeen(APawn* SeenPawn)
+    +EnemyState: EEnemyState
+    +HealthBarWidget: UHealthBarComponent*
+    +PawnSensing: UPawnSensingComponent*
+    +WeaponClass: TSubclassOf<AWeapon>
+    +EnemyController: AAIController*
+    +PatrolTarget: AActor*
+    +PatrolTargets: TArray<AActor*>
+}
+
+class Actor {
+    +Tick(float DeltaTime)
+    +BeginPlay()
+    +Destroyed()
+    +GetWorld(): UWorld*
+    +GetActorLocation(): FVector
+    +GetActorRotation(): FRotator
+    +SetActorLocation(const FVector& NewLocation)
+    +SetActorRotation(const FRotator& NewRotation)
+    +SetLifeSpan(float InLifespan)
+}
+
+class Item {
+    +Tick(float DeltaTime)
+    +BeginPlay()
+    +OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+    +OnSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+    +SpawnPickupSystem()
+    +SpawnPickupSound()
+    +ItemMesh: UStaticMeshComponent*
+    +ItemState: EItemState
+    +Sphere: USphereComponent*
+    +ItemEffect: UNiagaraComponent*
+    +PickupSound: USoundBase*
+}
+
+class Soul {
+    +Tick(float DeltaTime)
+    +BeginPlay()
+    +OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+    +Souls: int32
+    +DriftRate: float
+    +GetSouls(): int32
+    +SetSouls(int32 NumberOfSouls)
+}
+
+class Treasure {
+    +OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+    +Gold: int32
+    +GetGold(): int32
+}
+
+class Weapon {
+    +Equip(USceneComponent* InParent, FName InSocketName, AActor* NewOwner, APawn* NewInstigator)
+    +DeactivateEmbers()
+    +DisableSphereCollision()
+    +PlayEquipSound()
+    +AttachMeshToSocket(USceneComponent* InParent, const FName& InSocketName)
+    +BeginPlay()
+    +OnBoxOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+    +CreateFields(const FVector& FieldLocation)
+    +WeaponBox: UBoxComponent*
+    +BoxTraceStart: USceneComponent*
+    +BoxTraceEnd: USceneComponent*
+    +Damage: float
+    +GetWeaponBox(): UBoxComponent*
+}
+
+class BreakableActor {
+    +Tick(float DeltaTime)
+    +GetHit_Implementation(const FVector& ImpactPoint, AActor* Hitter)
+    +GeometryCollection: UGeometryCollectionComponent*
+    +Capsule: UCapsuleComponent*
+    +TreasureClasses: TArray<TSubclassOf<ATreasure>>
+}
+
+class HUD {
+    +BeginPlay()
+    +Tick(float DeltaTime)
+    +DrawHUD()
+    +GetCanvas(): UCanvas*
+    +GetPlayerController(): APlayerController*
+}
+
+class RPGHUD {
+    +BeginPlay()
+    +RPGOverlayClass: TSubclassOf<URPGOverlay>
+    +RPGOverlay: URPGOverlay*
+    +GetRPGOverlay(): URPGOverlay*
+}
+
+class UserWidget {
+    +AddToViewport()
+    +RemoveFromViewport()
+    +SetVisibility(ESlateVisibility InVisibility)
+    +BindToAnimationEvent(const UWidgetAnimation* Animation, EWidgetAnimationEvent AnimationEvent, FWidgetAnimationDynamicEvent Delegate)
+    +PlayAnimation(const UWidgetAnimation* InAnimation, float StartAtTime, int32 NumLoopsToPlay, EUMGSequencePlayMode::Type PlayMode, float PlaybackSpeed)
+}
+
+class RPGOverlay {
+    +SetHealthBarPercent(float Percent)
+    +SetStaminaBarPercent(float Percent)
+    +SetGold(int32 Gold)
+    +SetSouls(int32 Souls)
+    +HealthProgressBar: UProgressBar*
+    +StaminaProgressBar: UProgressBar*
+    +GoldText: UTextBlock*
+    +SoulsText: UTextBlock*
+}
+
+class HealthBar {
+    +HealthBar: UProgressBar*
+}
+
+class WidgetComponent {
+    +SetWidgetClass(TSubclassOf<UUserWidget> InWidgetClass)
+    +SetWidgetSpace(EWidgetSpace InWidgetSpace)
+    +SetDrawSize(FVector2D InDrawSize)
+    +SetDrawAtDesiredSize(bool bInDrawAtDesiredSize)
+    +SetPivot(FVector2D InPivot)
+}
+
+class HealthBarComponent {
+    +SetHealthPercent(float Percent)
+    +HealthBarWidget: UHealthBar*
+}
+
+class ActorComponent {
+    +Activate(bool bReset)
+    +Deactivate()
+    +IsActive(): bool
+    +IsRegistered(): bool
+    +ToggleActive()
+    +GetOwner(): AActor*
+    +GetWorld(): UWorld*
+}
+
+class AttributeComponent {
+    +TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+    +BeginPlay()
+    +ReceiveDamage(float Damage)
+    +UseStamina(float StaminaCost)
+    +GetHealthPercent(): float
+    +GetStaminaPercent(): float
+    +IsAlive(): bool
+    +AddSouls(int32 NumberOfSouls)
+    +AddGold(int32 AmountOfGold)
+    +GetGold(): int32
+    +GetSouls(): int32
+    +GetDodgeCost(): float
+    +GetStamina(): float
+    +Health: float
+    +MaxHealth: float
+    +Stamina: float
+    +MaxStamina: float
+    +Gold: int32
+    +Souls: int32
+    +DodgeCost: float
+    +StaminaRegenRate: float
+}
+
+Character <|-- BaseCharacter
+BaseCharacter <|-- RPGCharacter
+BaseCharacter <|-- Enemy
+Actor <|-- Item
+Item <|-- Soul
+Item <|-- Treasure
+Item <|-- Weapon
+Actor <|-- BreakableActor
+HUD <|-- RPGHUD
+UserWidget <|-- RPGOverlay
+UserWidget <|-- HealthBar
+WidgetComponent <|-- HealthBarComponent
+ActorComponent <|-- AttributeComponent
+
+@enduml
