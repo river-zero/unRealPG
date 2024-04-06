@@ -27,9 +27,9 @@ https://github.com/river-zero/unRealPG/assets/124229424/21bb3c5b-a1c2-455c-9a33-
 | <img src="README/motionwarpoing.gif" width="250" height="150"> |                                                            |                                                                   |
 |                    모션 워핑을 이용한 공격                     |                                                            |                                                                   |
 # 클래스 구조도
-![](out\UML\UML1.png)
-![](out\UML\UML2.png)
-![](out\UML\UML3.png)
+![](out/UML/UML1.png)
+![](out/UML/UML2.png)
+![](out/UML/UML3.png)
 
 # 구현 사항
 - 상속
